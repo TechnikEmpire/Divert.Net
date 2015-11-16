@@ -1,6 +1,6 @@
 # Divert.Net
 
-.NET Wrapper for WinDivert
+.NET Wrapper for WinDivert, available under the very permissive MIT License. 
 
 ##Goals
 
