@@ -36,17 +36,97 @@ namespace Divert
 
 		ICMPv6Header::~ICMPv6Header()
 		{
-
+			this->!ICMPv6Header();
 		}
 
 		ICMPv6Header::!ICMPv6Header()
 		{
-
+			if (m_icmpv6Header != nullptr)
+			{
+				// This pointer is provided by WinDivert and is not ours to manage.
+				m_icmpv6Header = nullptr;
+			}
 		}
 
 		ICMPv6Header::ICMPv6Header(PWINDIVERT_ICMPV6HDR icmpv6Header)
 		{
+			#ifndef NDEBUG
+			System::Diagnostics::Debug::Assert(icmpv6Header != nullptr, u8"In ICMPv6Header::ICMPv6Header(PWINDIVERT_ICMPV6HDR) - nullptr provided to constructor expecting non-null pointer argument.");
+			#endif
 
+			m_icmpv6Header = icmpv6Header;
+		}
+
+		System::Byte ICMPv6Header::Type::get()
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				return m_icmpv6Header->Type;
+			}
+
+			return 0;
+		}
+
+		void ICMPv6Header::Type::set(System::Byte value)
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				m_icmpv6Header->Type = value;
+			}
+		}
+
+		System::Byte ICMPv6Header::Code::get()
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				return m_icmpv6Header->Code;
+			}
+
+			return 0;
+		}
+
+		void ICMPv6Header::Code::set(System::Byte value)
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				m_icmpv6Header->Code = value;
+			}
+		}
+
+		uint16_t ICMPv6Header::Checksum::get()
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				return m_icmpv6Header->Checksum;
+			}
+
+			return 0;
+		}
+
+		void ICMPv6Header::Checksum::set(uint16_t value)
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				m_icmpv6Header->Checksum = value;
+			}
+		}
+
+		uint32_t ICMPv6Header::Body::get()
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				return m_icmpv6Header->Body;
+			}
+
+			return 0;
+		}
+
+		void ICMPv6Header::Body::set(uint32_t value)
+		{
+			if (m_icmpv6Header != nullptr)
+			{
+				m_icmpv6Header->Body = value;
+			}
 		}
 
 		PWINDIVERT_ICMPV6HDR ICMPv6Header::GetUnmanagedICMPv6Header()

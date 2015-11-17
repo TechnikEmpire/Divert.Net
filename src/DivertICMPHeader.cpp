@@ -50,9 +50,12 @@ namespace Divert
 
 		ICMPHeader::ICMPHeader(PWINDIVERT_ICMPHDR icmpHeader)
 		{
+			#ifndef NDEBUG
+			System::Diagnostics::Debug::Assert(icmpHeader != nullptr, u8"In ICMPHeader::ICMPHeader(PWINDIVERT_ICMPHDR) - nullptr provided to constructor expecting non-null pointer argument.");
+			#endif
+
 			m_icmpHeader = icmpHeader;
 		}
-
 
 		System::Byte ICMPHeader::Type::get()
 		{

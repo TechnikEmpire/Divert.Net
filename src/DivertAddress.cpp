@@ -48,6 +48,10 @@ namespace Divert
 
 		Address::Address(PWINDIVERT_ADDRESS address)
 		{			
+			#ifndef NDEBUG
+			System::Diagnostics::Debug::Assert(address != nullptr, u8"Address::Address(PWINDIVERT_ADDRESS) - nullptr provided to constructor expecting non-null pointer argument.");
+			#endif
+
 			m_address = address;
 		}
 

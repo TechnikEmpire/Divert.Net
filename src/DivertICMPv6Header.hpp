@@ -37,6 +37,9 @@ namespace Divert
 		/// When a packet is intercepted and the headers are parsed, the packet may be an ICMPv6
 		/// packet. If such is the case, this structure will be populated with all of the
 		/// information in the ICMPv6 packet header.
+		/// 
+		/// More information here:
+		/// http://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#ICMP_segment_structure
 		/// </summary>
 		ref class ICMPv6Header
 		{
@@ -58,6 +61,30 @@ namespace Divert
 			/// Finalizer for releasing unmanaged resources.
 			/// </summary>
 			!ICMPv6Header();
+
+			property System::Byte Type
+			{
+				System::Byte get();
+				void set(System::Byte value);
+			}
+
+			property System::Byte Code
+			{
+				System::Byte get();
+				void set(System::Byte value);
+			}
+
+			property uint16_t Checksum
+			{
+				uint16_t get();
+				void set(uint16_t value);
+			}
+
+			property uint32_t Body
+			{
+				uint32_t get();
+				void set(uint32_t value);
+			}
 
 		internal:
 
