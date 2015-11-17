@@ -41,32 +41,32 @@ namespace Divert
 		};
 
 		/// <summary>
-		/// The DivertAddress is supplied to Send/Recv methods, where information such as the
+		/// The Address is supplied to Send/Recv methods, where information such as the
 		/// interface, sub-interface and the direction of the packet captured will be stored in this
 		/// object in the event of a successful call.
 		/// </summary>
-		ref class DivertAddress
+		ref class Address
 		{
 
 		public:
 
 			/// <summary>
-			/// Default constructor for the DivertAddress object. This internally allocates a
+			/// Default constructor for the Address object. This internally allocates a
 			/// WINDIVERT_ADDRESS object which is supplied internally to the unmanaged side of
 			/// send/recv methods.
 			/// </summary>
-			DivertAddress();
+			Address();
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
 			/// https://msdn.microsoft.com/library/ms177197(v=vs.100).aspx.
 			/// </summary>
-			~DivertAddress();
+			~Address();
 
 			/// <summary>
 			/// Finalizer for releasing unmanaged resources.
 			/// </summary>
-			!DivertAddress();
+			!Address();
 
 			/// <summary>
 			/// The interface index on which the packet arrived (for inbound packets), or is to be
@@ -103,7 +103,7 @@ namespace Divert
 			/// <param name="address">
 			/// Unmanaged PWINDIVERT_ADDRESS to construct this wrapper around.
 			/// </param>
-			DivertAddress(PWINDIVERT_ADDRESS address);
+			Address(PWINDIVERT_ADDRESS address);
 
 			/// <summary>
 			/// Internal accessor to the unmanaged PWINDIVERT_ADDRESS object held by this object. 

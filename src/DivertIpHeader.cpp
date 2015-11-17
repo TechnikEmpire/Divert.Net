@@ -29,43 +29,47 @@ namespace Divert
 	namespace Net
 	{
 
-		DivertIpHeader::DivertIpHeader()
+		IpHeader::IpHeader()
 		{
-			m_sourceAddress = System::Net::IPAddress::Any;
-			m_destinationAddress = System::Net::IPAddress::Any;
+			Init();
 		}
 
-		DivertIpHeader::~DivertIpHeader()
+		IpHeader::~IpHeader()
 		{
-			this->!DivertIpHeader();
+			this->!IpHeader();
 		}
 
-		DivertIpHeader::!DivertIpHeader()
+		IpHeader::!IpHeader()
 		{
 			if (m_ipHeader != nullptr)
 			{
-				delete m_ipHeader;
+				// This pointer is provided by WinDivert and is not ours to manage.
+				m_ipHeader = nullptr;
 			}
 		}
 
-		DivertIpHeader::DivertIpHeader(PWINDIVERT_IPHDR ipheader)
+		IpHeader::IpHeader(PWINDIVERT_IPHDR ipHeader)
 		{
-			m_ipHeader = ipheader;
+			#ifndef NDEBUG
+			System::Diagnostics::Debug::Assert(ipHeader != nullptr, u8"In IpHeader::IpHeader(PWINDIVERT_IPHDR) - nullptr provided to constructor expecting non-null pointer argument.");
+			#endif
+
+			Init();
+
+			m_ipHeader = ipHeader;
 		}
 
-		System::Byte DivertIpHeader::HeaderLength::get()
+		System::Byte IpHeader::HeaderLength::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->HdrLength;				
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::HeaderLength::set(System::Byte value)
+		void IpHeader::HeaderLength::set(System::Byte value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -73,19 +77,17 @@ namespace Divert
 			}
 		}
 
-		System::Byte DivertIpHeader::Version::get()
+		System::Byte IpHeader::Version::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->Version;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::Version::set(System::Byte value)
+		void IpHeader::Version::set(System::Byte value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -93,19 +95,17 @@ namespace Divert
 			}
 		}
 
-		System::Byte DivertIpHeader::TOS::get()
+		System::Byte IpHeader::TOS::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->TOS;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::TOS::set(System::Byte value)
+		void IpHeader::TOS::set(System::Byte value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -113,19 +113,17 @@ namespace Divert
 			}
 		}
 
-		uint16_t DivertIpHeader::Length::get()
+		uint16_t IpHeader::Length::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->Length;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::Length::set(uint16_t value)
+		void IpHeader::Length::set(uint16_t value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -133,19 +131,17 @@ namespace Divert
 			}
 		}
 
-		System::Byte DivertIpHeader::Id::get()
+		System::Byte IpHeader::Id::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->Id;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::Id::set(System::Byte value)
+		void IpHeader::Id::set(System::Byte value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -153,19 +149,17 @@ namespace Divert
 			}
 		}
 
-		uint16_t DivertIpHeader::FragOff::get()
+		uint16_t IpHeader::FragOff::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return WINDIVERT_IPHDR_GET_FRAGOFF(m_ipHeader);
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::FragOff::set(uint16_t value)
+		void IpHeader::FragOff::set(uint16_t value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -173,19 +167,17 @@ namespace Divert
 			}
 		}
 
-		uint16_t DivertIpHeader::MF::get()
+		uint16_t IpHeader::MF::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return WINDIVERT_IPHDR_GET_MF(m_ipHeader);
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::MF::set(uint16_t value)
+		void IpHeader::MF::set(uint16_t value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -193,19 +185,17 @@ namespace Divert
 			}
 		}
 
-		uint16_t DivertIpHeader::DF::get()
+		uint16_t IpHeader::DF::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return WINDIVERT_IPHDR_GET_DF(m_ipHeader);
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::DF::set(uint16_t value)
+		void IpHeader::DF::set(uint16_t value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -213,19 +203,17 @@ namespace Divert
 			}
 		}
 
-		uint16_t DivertIpHeader::Reserved::get()
+		uint16_t IpHeader::Reserved::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return WINDIVERT_IPHDR_GET_RESERVED(m_ipHeader);
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::Reserved::set(uint16_t value)
+		void IpHeader::Reserved::set(uint16_t value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -233,19 +221,17 @@ namespace Divert
 			}
 		}
 
-		System::Byte DivertIpHeader::TTL::get()
+		System::Byte IpHeader::TTL::get()
 		{
 			if (m_ipHeader != nullptr)
 			{				
 				return m_ipHeader->TTL;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::TTL::set(System::Byte value)
+		void IpHeader::TTL::set(System::Byte value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -253,19 +239,17 @@ namespace Divert
 			}
 		}
 
-		System::Byte DivertIpHeader::Protocol::get()
+		System::Byte IpHeader::Protocol::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->Protocol;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::Protocol::set(System::Byte value)
+		void IpHeader::Protocol::set(System::Byte value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -273,19 +257,17 @@ namespace Divert
 			}
 		}
 
-		uint16_t DivertIpHeader::Checksum::get()
+		uint16_t IpHeader::Checksum::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
 				return m_ipHeader->Checksum;
 			}
-			else
-			{
-				return 0;
-			}
+
+			return 0;
 		}
 
-		void DivertIpHeader::Checksum::set(uint16_t value)
+		void IpHeader::Checksum::set(uint16_t value)
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -293,7 +275,7 @@ namespace Divert
 			}
 		}
 
-		System::Net::IPAddress^ DivertIpHeader::SourceAddress::get()
+		System::Net::IPAddress^ IpHeader::SourceAddress::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -307,7 +289,7 @@ namespace Divert
 			return m_sourceAddress;
 		}
 
-		void DivertIpHeader::SourceAddress::set(System::Net::IPAddress^ value)
+		void IpHeader::SourceAddress::set(System::Net::IPAddress^ value)
 		{
 			UINT32 intAddress = System::BitConverter::ToInt32(value->GetAddressBytes(), 0);
 
@@ -321,7 +303,7 @@ namespace Divert
 			m_lastSrcAddr = intAddress;
 		}
 
-		System::Net::IPAddress^ DivertIpHeader::DestinationAddress::get()
+		System::Net::IPAddress^ IpHeader::DestinationAddress::get()
 		{
 			if (m_ipHeader != nullptr)
 			{
@@ -335,7 +317,7 @@ namespace Divert
 			return m_destinationAddress;
 		}
 
-		void DivertIpHeader::DestinationAddress::set(System::Net::IPAddress^ value)
+		void IpHeader::DestinationAddress::set(System::Net::IPAddress^ value)
 		{
 			UINT32 intAddress = System::BitConverter::ToInt32(value->GetAddressBytes(), 0);
 
@@ -349,9 +331,15 @@ namespace Divert
 			m_lastDstAddr = intAddress;
 		}
 
-		PWINDIVERT_IPHDR DivertIpHeader::GetUnmanagedIpHeader()
+		PWINDIVERT_IPHDR IpHeader::GetUnmanagedIpHeader()
 		{
 			return m_ipHeader;
+		}
+
+		void IpHeader::Init()
+		{
+			m_sourceAddress = System::Net::IPAddress::Any;
+			m_destinationAddress = System::Net::IPAddress::Any;
 		}
 
 	} /* namespace Net */

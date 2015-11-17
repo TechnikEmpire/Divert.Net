@@ -45,6 +45,10 @@ namespace Divert
 
 		DivertHandle::DivertHandle(HANDLE handle)
 		{
+			#ifndef NDEBUG
+			System::Diagnostics::Debug::Assert(handle != nullptr, u8"In DivertHandle::DivertHandle(HANDLE) - nullptr provided to constructor expecting non-null pointer argument.");
+			#endif
+
 			m_handle = handle;
 		}
 

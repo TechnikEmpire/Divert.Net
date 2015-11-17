@@ -28,17 +28,17 @@ namespace Divert
 {
 	namespace Net
 	{
-		DivertAddress::DivertAddress()
+		Address::Address()
 		{
 			m_address = new WINDIVERT_ADDRESS();
 		}
 
-		DivertAddress::~DivertAddress()
+		Address::~Address()
 		{
-			this->!DivertAddress();
+			this->!Address();
 		}
 
-		DivertAddress::!DivertAddress()
+		Address::!Address()
 		{
 			if (m_address != nullptr)
 			{
@@ -46,12 +46,12 @@ namespace Divert
 			}
 		}
 
-		DivertAddress::DivertAddress(PWINDIVERT_ADDRESS address)
+		Address::Address(PWINDIVERT_ADDRESS address)
 		{			
 			m_address = address;
 		}
 
-		uint32_t DivertAddress::InterfaceIndex::get()
+		uint32_t Address::InterfaceIndex::get()
 		{
 			if (m_address != nullptr)
 			{				
@@ -63,7 +63,7 @@ namespace Divert
 			}
 		}
 
-		uint32_t DivertAddress::SubInterfaceIndex::get()
+		uint32_t Address::SubInterfaceIndex::get()
 		{
 			if (m_address != nullptr)
 			{
@@ -75,7 +75,7 @@ namespace Divert
 			}
 		}
 
-		DivertDirection DivertAddress::Direction::get()
+		DivertDirection Address::Direction::get()
 		{
 			if (m_address != nullptr)
 			{
@@ -87,7 +87,7 @@ namespace Divert
 			}
 		}
 
-		const PWINDIVERT_ADDRESS DivertAddress::GetUnmanagedAddress()
+		const PWINDIVERT_ADDRESS Address::GetUnmanagedAddress()
 		{
 			return m_address;
 		}

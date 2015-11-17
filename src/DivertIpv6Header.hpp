@@ -33,15 +33,15 @@ namespace Divert
 	{
 
 		/// <summary>
-		/// Represents the IP header for an intercepted IPV4 packet.
+		/// Represents the IP header for an intercepted IPV6 packet.
 		/// 
-		/// When a packet is intercepted and the headers are parsed, the packet may be an IPV4
+		/// When a packet is intercepted and the headers are parsed, the packet may be an IPV6
 		/// packet. If such is the case, this structure will be populated with all of the
-		/// information in the IPV4 packet header, such as the source and destination addresses.
+		/// information in the IPV6 packet header, such as the source and destination addresses.
 		/// 
-		/// More information here: https://en.wikipedia.org/wiki/IPv4#Packet_structure
+		/// More information here: https://en.wikipedia.org/wiki/IPv6#Packet_format
 		/// </summary>
-		ref class IpHeader
+		ref class Ipv6Header
 		{
 
 		public:
@@ -51,89 +51,47 @@ namespace Divert
 			/// WINDIVERT_IPHDR object which is supplied internally to the unmanaged side of
 			/// send/recv methods.
 			/// </summary>
-			IpHeader();
+			Ipv6Header();
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
 			/// https://msdn.microsoft.com/library/ms177197(v=vs.100).aspx.
 			/// </summary>
-			~IpHeader();
+			~Ipv6Header();
 
 			/// <summary>
 			/// Finalizer for releasing unmanaged resources.
 			/// </summary>
-			!IpHeader();
+			!Ipv6Header();
 
-			property System::Byte HeaderLength
+			property uint32_t Version
+			{
+				uint32_t get();
+				void set(uint32_t value);
+			}
+
+			property uint32_t TrafficClass
+			{
+				uint32_t get();
+				void set(uint32_t value);
+			}
+
+			property uint32_t FlowLabel
+			{
+				uint32_t get();
+				void set(uint32_t value);
+			}
+
+			property System::Byte NextHeader
 			{
 				System::Byte get();
 				void set(System::Byte value);
 			}
 
-			property System::Byte Version
+			property System::Byte HopLimit
 			{
 				System::Byte get();
 				void set(System::Byte value);
-			}
-
-			property System::Byte TOS
-			{
-				System::Byte get();
-				void set(System::Byte value);
-			}
-
-			property uint16_t Length
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property System::Byte Id
-			{
-				System::Byte get();
-				void set(System::Byte value);
-			}
-
-			property uint16_t FragOff
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t MF
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t DF
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Reserved
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property System::Byte TTL
-			{
-				System::Byte get();
-				void set(System::Byte value);
-			}
-
-			property System::Byte Protocol
-			{
-				System::Byte get();
-				void set(System::Byte value);
-			}
-
-			property uint16_t Checksum
-			{
-				uint16_t get();
-				void set(uint16_t value);
 			}
 
 			property System::Net::IPAddress^ SourceAddress
@@ -154,17 +112,17 @@ namespace Divert
 			/// Allow internal construction with the supplied unmanaged ip header.
 			/// </summary>
 			/// <param name="address">
-			/// Unmanaged PWINDIVERT_IPHDR to construct this wrapper around.
+			/// Unmanaged PWINDIVERT_IPV6HDR to construct this wrapper around.
 			/// </param>
-			IpHeader(PWINDIVERT_IPHDR ipHeader);
+			Ipv6Header(PWINDIVERT_IPV6HDR ipv6Header);
 
 			/// <summary>
-			/// Internal accessor to the unmanaged PWINDIVERT_IPHDR object held by this object. 
+			/// Internal accessor to the unmanaged PWINDIVERT_IPV6HDR object held by this object. 
 			/// </summary>
 			/// <returns>
-			/// The unmanaged PWINDIVERT_IPHDR member.
+			/// The unmanaged PWINDIVERT_IPV6HDR member.
 			/// </returns>
-			PWINDIVERT_IPHDR GetUnmanagedIpHeader();
+			PWINDIVERT_IPV6HDR GetUnmanagedIpv6Header();
 
 		private:
 
@@ -185,7 +143,7 @@ namespace Divert
 			/// the getter/setter methods. On a get, if the address is no longer the same, a managed
 			/// IPAddress object is reconstructed to reflect the current value.
 			/// </summary>
-			UINT32 m_lastDstAddr = 0;
+			UINT32* m_lastDstAddr = nullptr;
 
 			/// <summary>
 			/// In order to only recreate the System::Net::IPAddress object when the address on the
@@ -194,17 +152,20 @@ namespace Divert
 			/// the getter/setter methods. On a get, if the address is no longer the same, a managed
 			/// IPAddress object is reconstructed to reflect the current value.
 			/// </summary>
-			UINT32 m_lastSrcAddr = 0;
+			UINT32* m_lastSrcAddr = nullptr;
 
 			/// <summary>
-			/// Privately held PWINDIVERT_IPHDR member. Exposed internally only so that other
+			/// Privately held PWINDIVERT_IPV6HDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
-			PWINDIVERT_IPHDR m_ipHeader;	
+			PWINDIVERT_IPV6HDR m_ipv6Header;
 
 			/// <summary>
 			/// There's some special initialization required, regardless of constructor. Rather than
 			/// duplicate the code, wrap it up in an init method and call it in all constructors.
+			/// 
+			/// This is primarily for ensuring that the m_lastXAddr members are properly allocated
+			/// so we're not doing any illegal access in other members.
 			/// </summary>
 			void Init();
 

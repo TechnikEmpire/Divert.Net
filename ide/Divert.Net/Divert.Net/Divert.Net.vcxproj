@@ -335,12 +335,14 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
     <ClInclude Include="..\..\..\src\DivertAddress.hpp" />
     <ClInclude Include="..\..\..\src\DivertHandle.hpp" />
     <ClInclude Include="..\..\..\src\DivertIpHeader.hpp" />
+    <ClInclude Include="..\..\..\src\DivertIpv6Header.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\DivertAddress.cpp" />
     <ClCompile Include="..\..\..\src\DivertHandle.cpp" />
     <ClCompile Include="..\..\..\src\DivertIpHeader.cpp" />
+    <ClCompile Include="..\..\..\src\DivertIpv6Header.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
