@@ -41,7 +41,7 @@ namespace Divert
 		/// 
 		/// More information here: https://en.wikipedia.org/wiki/IPv6#Packet_format
 		/// </summary>
-		ref class Ipv6Header
+		ref class IPv6Header
 		{
 
 		public:
@@ -51,18 +51,18 @@ namespace Divert
 			/// WINDIVERT_IPHDR object which is supplied internally to the unmanaged side of
 			/// send/recv methods.
 			/// </summary>
-			Ipv6Header();
+			IPv6Header();
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
 			/// https://msdn.microsoft.com/library/ms177197(v=vs.100).aspx.
 			/// </summary>
-			~Ipv6Header();
+			~IPv6Header();
 
 			/// <summary>
 			/// Finalizer for releasing unmanaged resources.
 			/// </summary>
-			!Ipv6Header();
+			!IPv6Header();
 
 			property uint32_t Version
 			{
@@ -114,7 +114,7 @@ namespace Divert
 			/// <param name="address">
 			/// Unmanaged PWINDIVERT_IPV6HDR to construct this wrapper around.
 			/// </param>
-			Ipv6Header(PWINDIVERT_IPV6HDR ipv6Header);
+			IPv6Header(PWINDIVERT_IPV6HDR ipv6Header);
 
 			/// <summary>
 			/// Internal accessor to the unmanaged PWINDIVERT_IPV6HDR object held by this object. 
@@ -122,7 +122,7 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_IPV6HDR member.
 			/// </returns>
-			PWINDIVERT_IPV6HDR GetUnmanagedIpv6Header();
+			PWINDIVERT_IPV6HDR GetUnmanagedIPv6Header();
 
 		private:
 
@@ -158,7 +158,7 @@ namespace Divert
 			/// Privately held PWINDIVERT_IPV6HDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
-			PWINDIVERT_IPV6HDR m_ipv6Header;
+			PWINDIVERT_IPV6HDR m_ipv6Header = nullptr;
 
 			/// <summary>
 			/// There's some special initialization required, regardless of constructor. Rather than

@@ -41,28 +41,26 @@ namespace Divert
 		/// 
 		/// More information here: https://en.wikipedia.org/wiki/IPv4#Packet_structure
 		/// </summary>
-		ref class IpHeader
+		ref class IPHeader
 		{
 
 		public:
 
 			/// <summary>
-			/// Default constructor for the IpHeader object. This internally allocates a
-			/// WINDIVERT_IPHDR object which is supplied internally to the unmanaged side of
-			/// send/recv methods.
+			/// Default constructor.
 			/// </summary>
-			IpHeader();
+			IPHeader();
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
 			/// https://msdn.microsoft.com/library/ms177197(v=vs.100).aspx.
 			/// </summary>
-			~IpHeader();
+			~IPHeader();
 
 			/// <summary>
 			/// Finalizer for releasing unmanaged resources.
 			/// </summary>
-			!IpHeader();
+			!IPHeader();
 
 			property System::Byte HeaderLength
 			{
@@ -88,10 +86,10 @@ namespace Divert
 				void set(uint16_t value);
 			}
 
-			property System::Byte Id
+			property uint16_t Id
 			{
-				System::Byte get();
-				void set(System::Byte value);
+				uint16_t get();
+				void set(uint16_t value);
 			}
 
 			property uint16_t FragOff
@@ -156,7 +154,7 @@ namespace Divert
 			/// <param name="address">
 			/// Unmanaged PWINDIVERT_IPHDR to construct this wrapper around.
 			/// </param>
-			IpHeader(PWINDIVERT_IPHDR ipHeader);
+			IPHeader(PWINDIVERT_IPHDR ipHeader);
 
 			/// <summary>
 			/// Internal accessor to the unmanaged PWINDIVERT_IPHDR object held by this object. 
@@ -164,19 +162,19 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_IPHDR member.
 			/// </returns>
-			PWINDIVERT_IPHDR GetUnmanagedIpHeader();
+			PWINDIVERT_IPHDR GetUnmanagedIPHeader();
 
 		private:
 
 			/// <summary>
 			/// The source address for the packet that this header belongs to. 
 			/// </summary>
-			System::Net::IPAddress^ m_sourceAddress;
+			System::Net::IPAddress^ m_sourceAddress = nullptr;
 
 			/// <summary>
 			/// The destination address for the packet that this header belongs to.
 			/// </summary>
-			System::Net::IPAddress^ m_destinationAddress;
+			System::Net::IPAddress^ m_destinationAddress = nullptr;
 
 			/// <summary>
 			/// In order to only recreate the System::Net::IPAddress object when the address on the
@@ -200,7 +198,7 @@ namespace Divert
 			/// Privately held PWINDIVERT_IPHDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
-			PWINDIVERT_IPHDR m_ipHeader;	
+			PWINDIVERT_IPHDR m_ipHeader = nullptr;	
 
 			/// <summary>
 			/// There's some special initialization required, regardless of constructor. Rather than

@@ -46,7 +46,7 @@ namespace Divert
 		public:
 
 			/// <summary>
-			/// Default constructor for building a handle initialized to an invalid state. 
+			/// Default constructor. Initial handle state is set to an invalid state. 
 			/// </summary>
 			DivertHandle();
 

@@ -22,24 +22,24 @@
 * SOFTWARE.
 */
 
-#include "DivertIpv6Header.hpp"
+#include "DivertIPv6Header.hpp"
 
 namespace Divert
 {
 	namespace Net
 	{
 
-		Ipv6Header::Ipv6Header()
+		IPv6Header::IPv6Header()
 		{
 			Init();
 		}
 
-		Ipv6Header::~Ipv6Header()
+		IPv6Header::~IPv6Header()
 		{
-			this->!Ipv6Header();
+			this->!IPv6Header();
 		}
 
-		Ipv6Header::!Ipv6Header()
+		IPv6Header::!IPv6Header()
 		{
 			if (m_lastDstAddr != nullptr)
 			{
@@ -50,19 +50,25 @@ namespace Divert
 			{
 				delete[] m_lastSrcAddr;
 			}
+
+			if (m_ipv6Header != nullptr)
+			{
+				// This pointer is provided by WinDivert and is not ours to manage.
+				m_ipv6Header = nullptr;
+			}
 		}
 
-		Ipv6Header::Ipv6Header(PWINDIVERT_IPV6HDR ipv6Header)
+		IPv6Header::IPv6Header(PWINDIVERT_IPV6HDR ipv6Header)
 		{
 			#ifndef NDEBUG
-			System::Diagnostics::Debug::Assert(ipv6Header != nullptr, u8"In Ipv6Header::Ipv6Header(PWINDIVERT_IPV6HDR) - nullptr provided to constructor expecting non-null pointer argument.");
+			System::Diagnostics::Debug::Assert(ipv6Header != nullptr, u8"In IPv6Header::IPv6Header(PWINDIVERT_IPV6HDR) - nullptr provided to constructor expecting non-null pointer argument.");
 			#endif
 
 			Init();
 			m_ipv6Header = ipv6Header;
 		}
 
-		uint32_t Ipv6Header::Version::get()
+		uint32_t IPv6Header::Version::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -72,7 +78,7 @@ namespace Divert
 			return 0;
 		}
 
-		void Ipv6Header::Version::set(uint32_t value)
+		void IPv6Header::Version::set(uint32_t value)
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -80,7 +86,7 @@ namespace Divert
 			}
 		}
 
-		uint32_t Ipv6Header::TrafficClass::get()
+		uint32_t IPv6Header::TrafficClass::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -90,7 +96,7 @@ namespace Divert
 			return 0;
 		}
 
-		void Ipv6Header::TrafficClass::set(uint32_t value)
+		void IPv6Header::TrafficClass::set(uint32_t value)
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -98,7 +104,7 @@ namespace Divert
 			}
 		}
 
-		uint32_t Ipv6Header::FlowLabel::get()
+		uint32_t IPv6Header::FlowLabel::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -108,7 +114,7 @@ namespace Divert
 			return 0;
 		}
 
-		void Ipv6Header::FlowLabel::set(uint32_t value)
+		void IPv6Header::FlowLabel::set(uint32_t value)
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -116,7 +122,7 @@ namespace Divert
 			}
 		}
 
-		System::Byte Ipv6Header::NextHeader::get()
+		System::Byte IPv6Header::NextHeader::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -126,7 +132,7 @@ namespace Divert
 			return 0;
 		}
 
-		void Ipv6Header::NextHeader::set(System::Byte value)
+		void IPv6Header::NextHeader::set(System::Byte value)
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -134,7 +140,7 @@ namespace Divert
 			}
 		}
 
-		System::Byte Ipv6Header::HopLimit::get()
+		System::Byte IPv6Header::HopLimit::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -144,7 +150,7 @@ namespace Divert
 			return 0;
 		}
 
-		void Ipv6Header::HopLimit::set(System::Byte value)
+		void IPv6Header::HopLimit::set(System::Byte value)
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -152,7 +158,7 @@ namespace Divert
 			}
 		}
 
-		System::Net::IPAddress^ Ipv6Header::SourceAddress::get()
+		System::Net::IPAddress^ IPv6Header::SourceAddress::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -180,7 +186,7 @@ namespace Divert
 			return m_sourceAddress;
 		}
 
-		void Ipv6Header::SourceAddress::set(System::Net::IPAddress^ value)
+		void IPv6Header::SourceAddress::set(System::Net::IPAddress^ value)
 		{
 			array<System::Byte>^ ipArray = value->GetAddressBytes();
 
@@ -200,7 +206,7 @@ namespace Divert
 			m_sourceAddress = value;
 		}
 
-		System::Net::IPAddress^ Ipv6Header::DestinationAddress::get()
+		System::Net::IPAddress^ IPv6Header::DestinationAddress::get()
 		{
 			if (m_ipv6Header != nullptr)
 			{
@@ -228,7 +234,7 @@ namespace Divert
 			return m_destinationAddress;
 		}
 
-		void Ipv6Header::DestinationAddress::set(System::Net::IPAddress^ value)
+		void IPv6Header::DestinationAddress::set(System::Net::IPAddress^ value)
 		{
 			array<System::Byte>^ ipArray = value->GetAddressBytes();
 
@@ -248,25 +254,25 @@ namespace Divert
 			m_destinationAddress = value;
 		}
 
-		PWINDIVERT_IPV6HDR Ipv6Header::GetUnmanagedIpv6Header()
+		PWINDIVERT_IPV6HDR IPv6Header::GetUnmanagedIPv6Header()
 		{
 			return m_ipv6Header;
 		}
 
-		void Ipv6Header::Init()
+		void IPv6Header::Init()
 		{
 			m_lastDstAddr = new UINT32[4];
 			m_lastSrcAddr = new UINT32[4];
 
 			if (m_lastDstAddr == nullptr)
 			{
-				System::Exception^ err = gcnew System::Exception(u8"In Ipv6Header::Init() - Failed to allocate new array UINT32[4] for member m_lastDstAddr.");
+				System::Exception^ err = gcnew System::Exception(u8"In IPv6Header::Init() - Failed to allocate new array UINT32[4] for member m_lastDstAddr.");
 				throw err;
 			}
 
 			if (m_lastSrcAddr == nullptr)
 			{
-				System::Exception^ err = gcnew System::Exception(u8"In Ipv6Header::Init() - Failed to allocate new array UINT32[4] for member m_lastSrcAddr.");
+				System::Exception^ err = gcnew System::Exception(u8"In IPv6Header::Init() - Failed to allocate new array UINT32[4] for member m_lastSrcAddr.");
 				throw err;
 			}
 

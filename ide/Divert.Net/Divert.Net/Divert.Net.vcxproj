@@ -184,8 +184,8 @@
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug x86|x64'">
@@ -204,8 +204,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x86|Win32'">
@@ -223,8 +223,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug x64|Win32'">
@@ -243,8 +243,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x64|Win32'">
@@ -263,8 +263,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x86|x64'">
@@ -282,8 +282,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug x64|x64'">
@@ -302,8 +302,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x64|x64'">
@@ -322,8 +322,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
       <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.dll" "$(OutDir)"
-xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</Command>
+      <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -334,6 +334,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
   <ItemGroup>
     <ClInclude Include="..\..\..\src\DivertAddress.hpp" />
     <ClInclude Include="..\..\..\src\DivertHandle.hpp" />
+    <ClInclude Include="..\..\..\src\DivertICMPHeader.hpp" />
+    <ClInclude Include="..\..\..\src\DivertICMPv6Header.hpp" />
     <ClInclude Include="..\..\..\src\DivertIpHeader.hpp" />
     <ClInclude Include="..\..\..\src\DivertIpv6Header.hpp" />
     <ClInclude Include="resource.h" />
@@ -341,6 +343,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(Platform)\*.sys" "$(OutDir)"</C
   <ItemGroup>
     <ClCompile Include="..\..\..\src\DivertAddress.cpp" />
     <ClCompile Include="..\..\..\src\DivertHandle.cpp" />
+    <ClCompile Include="..\..\..\src\DivertICMPHeader.cpp" />
+    <ClCompile Include="..\..\..\src\DivertICMPv6Header.cpp" />
     <ClCompile Include="..\..\..\src\DivertIpHeader.cpp" />
     <ClCompile Include="..\..\..\src\DivertIpv6Header.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
