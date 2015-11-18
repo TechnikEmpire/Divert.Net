@@ -7,3 +7,7 @@
  - Wrap WinDivert in a fully managed, easy to use CLR library.
  - Provide helpful extensions for commonly desired tasks, such as the ability to identify the process behind a packet flow.
  - Win?
+
+Currently this project is a WIP. A basic C# example program that sniffs and logs network traffic to the console exists and is functional, but nothing has been tested beyond that. 
+
+Before trying to build, there's a very small amount of configuration required, all of which is explained on the [Wiki page](https://github.com/TechnikEmpire/Divert.Net/wiki).
