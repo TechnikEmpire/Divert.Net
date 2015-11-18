@@ -41,7 +41,7 @@ namespace Divert
 		/// More information here:
 		/// http://en.wikipedia.org/wiki/Transmission_Control_Protocol#TCP_segment_structure
 		/// </summary>
-		ref class TCPHeader
+		public ref class TCPHeader
 		{
 
 		public:

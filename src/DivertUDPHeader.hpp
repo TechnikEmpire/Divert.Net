@@ -42,7 +42,7 @@ namespace Divert
 		/// More information here:
 		/// https://en.wikipedia.org/wiki/User_Datagram_Protocol#Packet_structure
 		/// </summary>
-		ref class UDPHeader
+		public ref class UDPHeader
 		{
 
 		public:

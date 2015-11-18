@@ -41,7 +41,7 @@ namespace Divert
 		/// 
 		/// More information here: https://en.wikipedia.org/wiki/IPv4#Packet_structure
 		/// </summary>
-		ref class IPHeader
+		public ref class IPHeader
 		{
 
 		public:

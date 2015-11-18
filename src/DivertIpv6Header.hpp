@@ -41,7 +41,7 @@ namespace Divert
 		/// 
 		/// More information here: https://en.wikipedia.org/wiki/IPv6#Packet_format
 		/// </summary>
-		ref class IPv6Header
+		public ref class IPv6Header
 		{
 
 		public:

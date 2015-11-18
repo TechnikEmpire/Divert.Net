@@ -34,7 +34,7 @@ namespace Divert
 		/// <summary>
 		/// Used to determine the direction of captured packets.
 		/// </summary>
-		public enum class DivertDirection : uint8_t
+		public enum DivertDirection
 		{
 			Outbound = 0,
 			Inbound = 1
@@ -45,7 +45,7 @@ namespace Divert
 		/// interface, sub-interface and the direction of the packet captured will be stored in this
 		/// object in the event of a successful call.
 		/// </summary>
-		ref class Address
+		public ref class Address
 		{
 
 		public:

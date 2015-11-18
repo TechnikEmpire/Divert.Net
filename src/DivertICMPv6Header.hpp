@@ -41,7 +41,7 @@ namespace Divert
 		/// More information here:
 		/// http://en.wikipedia.org/wiki/Internet_Control_Message_Protocol#ICMP_segment_structure
 		/// </summary>
-		ref class ICMPv6Header
+		public ref class ICMPv6Header
 		{
 
 		public:

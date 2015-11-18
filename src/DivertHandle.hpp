@@ -32,9 +32,8 @@ namespace Divert
 	{
 
 		/// <summary>
-		/// The DivertHandle class is meant to hold an open HANDLE* pointer, which should be
-		/// generated from functions such as WinDivertOpen. Handles are needed as a parameter to
-		/// some functions, such as the Send/Recv/Ex functions.
+		/// The DivertHandle class should be generated from functions such as WinDivertOpen. Handles
+		/// are needed as a parameter to some functions, such as the Send/Recv/Ex functions.
 		/// 
 		/// Handles are also generated when using the Ex (async) functions. Regardless of where the
 		/// handle originated, if you have a valid handle, you must keep a reference of it. If you
@@ -44,11 +43,6 @@ namespace Divert
 		{
 
 		public:
-
-			/// <summary>
-			/// Default constructor. Initial handle state is set to an invalid state. 
-			/// </summary>
-			DivertHandle();
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
@@ -84,6 +78,13 @@ namespace Divert
 		internal:
 
 			/// <summary>
+			/// Default constructor. Initial handle state is set to an invalid state. Constructor is
+			/// hidden from user because there is presently no known scenario where the API
+			/// shouldn't be explicitly creating and populating the internal pointer for the user.
+			/// </summary>
+			DivertHandle();
+
+			/// <summary>
 			/// Allow internal construction with the supplied unmanaged handle.
 			/// </summary>
 			/// <param name="handle">
@@ -97,7 +98,7 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged HANDLE member, regardless of its validity.
 			/// </returns>
-			const HANDLE GetHandle();
+			const HANDLE GetUnmanagedHandle();
 
 		private:
 

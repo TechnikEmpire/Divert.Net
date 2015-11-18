@@ -48,13 +48,13 @@ namespace Divert
 			}
 		}
 
-		UDPHeader::UDPHeader(PWINDIVERT_UDPHDR UDPHeader)
+		UDPHeader::UDPHeader(PWINDIVERT_UDPHDR udpHeader)
 		{
 			#ifndef NDEBUG
 			System::Diagnostics::Debug::Assert(m_udpHeader != nullptr, u8"In UDPHeader::UDPHeader(PWINDIVERT_UDPHDR) - nullptr provided to constructor expecting non-null pointer argument.");
 			#endif
 
-			m_udpHeader = address;
+			m_udpHeader = udpHeader;
 
 		}
 
@@ -132,7 +132,7 @@ namespace Divert
 
 		PWINDIVERT_UDPHDR UDPHeader::GetUnmanagedUDPHeader()
 		{
-
+			return m_udpHeader;
 		}
 
 	} /* namespace Net */

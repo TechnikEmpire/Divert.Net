@@ -62,7 +62,7 @@ namespace Divert
 			{
 				if (m_fromWinDivert)
 				{
-					return WinDivertClose(m_handle);
+					return WinDivertClose(m_handle) == 1;
 				}
 				else
 				{
@@ -80,7 +80,7 @@ namespace Divert
 			return m_handle != INVALID_HANDLE_VALUE;
 		}
 
-		const HANDLE DivertHandle::GetHandle()
+		const HANDLE DivertHandle::GetUnmanagedHandle()
 		{
 			return m_handle;
 		}

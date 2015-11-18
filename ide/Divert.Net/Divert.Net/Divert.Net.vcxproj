@@ -181,7 +181,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -201,7 +201,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -220,7 +220,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -240,7 +240,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -260,7 +260,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -279,7 +279,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -299,7 +299,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -319,7 +319,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\windivert\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
@@ -332,7 +332,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\Diversion.hpp" />
     <ClInclude Include="..\..\..\src\DivertAddress.hpp" />
+    <ClInclude Include="..\..\..\src\DivertAsyncResult.hpp" />
     <ClInclude Include="..\..\..\src\DivertHandle.hpp" />
     <ClInclude Include="..\..\..\src\DivertICMPHeader.hpp" />
     <ClInclude Include="..\..\..\src\DivertICMPv6Header.hpp" />
@@ -343,7 +345,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\Diversion.cpp" />
     <ClCompile Include="..\..\..\src\DivertAddress.cpp" />
+    <ClCompile Include="..\..\..\src\DivertAsyncResult.cpp" />
     <ClCompile Include="..\..\..\src\DivertHandle.cpp" />
     <ClCompile Include="..\..\..\src\DivertICMPHeader.cpp" />
     <ClCompile Include="..\..\..\src\DivertICMPv6Header.cpp" />
