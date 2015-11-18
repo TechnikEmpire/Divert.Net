@@ -59,6 +59,12 @@ namespace Divert
 			Sniff = 1,
 			Drop = 2
 		};
+	
+		public enum class DivertParam
+		{
+			QueueLength = 0,
+			QueueTime = 1
+		};
 
 		public ref class Diversion
 		{
@@ -141,6 +147,7 @@ namespace Divert
 			/// parameter, will be set internally.
 			/// </param>
 			/// <returns>
+			/// True if the operation succeeded and a packet was captured, false otherwise.
 			/// </returns>
 			bool Receive(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% receiveLength);
 
@@ -162,7 +169,7 @@ namespace Divert
 			/// 
 			/// The received packet is guaranteed to match the filter. An application should call
 			/// WinDivertRecvEx() as soon as possible after a successful call to WinDivertOpen().
-			/// More information here: https://reqrypt.org/windivert-doc.html#divert_recv
+			/// More information here: https://reqrypt.org/windivert-doc.html#divert_recv_ex
 			/// </summary>
 			/// <param name="packetBuffer">
 			/// A valid array allocated with a length greater than zero. 
@@ -195,6 +202,78 @@ namespace Divert
 			bool ReceiveAsync(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% receiveLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult);
 
 			/// <summary>
+			/// Injects a packet into the network stack. The injected packet may be one received
+			/// from WinDivertRecv(), or a modified version, or a completely new packet. More
+			/// information here: https://reqrypt.org/windivert-doc.html#divert_send
+			/// </summary>
+			/// <param name="packetBuffer">
+			/// A valid array allocated with a length greater than zero. 
+			/// </param>
+			/// <param name="address">
+			/// A Address instance. The Address instance will hold information about the origin and
+			/// direction of the intercepted packet.
+			/// </param>
+			/// <param name="sendLength">
+			/// The amount of data injected from the buffer. This is must be supplied as a ref
+			/// parameter, will be set internally.
+			/// </param>
+			/// <returns>
+			/// True if the supplied packet was successfully injected, false otherwise.
+			/// </returns>
+			bool Send(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength);
+
+			/// <summary>
+			/// Injects a packet into the network stack. The injected packet may be one received
+			/// from WinDivertRecv(), or a modified version, or a completely new packet.
+			/// 
+			/// This async function version will return immediately, always. If the return value is
+			/// true, then a packet was injected immediately on calling, and the sendLength
+			/// parameter will be set correctly.
+			/// 
+			/// However, if the function returns false, the packet was not injected immediately and
+			/// the operation may be pending. In such an event, the supplied sendLength variable
+			/// will not be updated, as the operation must be completed outside the scope of this
+			/// function. If a valid DivertAsyncResult object was supplied as a parameter, then the
+			/// user can call the DivertAsyncResult.Get(uint timeout) method to wait for the async
+			/// operation to finished, then user the other members of DivertAsyncResult to determine
+			/// if the operation was ultimately a success or not. If the operation was a success,
+			/// then the sendLength will be available from the DivertAsyncResult.Length member.
+			/// 
+			/// If DivertAsyncResult.Get(uint timeout) returns false, then the async IO failed
+			/// completely.
+			/// 
+			/// It is recommended that unless you truly care whether or not a packet injection
+			/// failed, always use this method and do not supply a DivertAsyncResult object. Simply
+			/// fire and forget. More information here:
+			/// https://reqrypt.org/windivert-doc.html#divert_send_ex
+			/// </summary>
+			/// <param name="packetBuffer">
+			/// A valid array allocated with a length greater than zero. 
+			/// </param>
+			/// <param name="address">
+			/// A Address instance. The Address instance will hold information about the origin and
+			/// direction of the intercepted packet.
+			/// </param>
+			/// <param name="sendLength">
+			/// The amount of data injected from the buffer. This is must be supplied as a ref
+			/// parameter, will be set internally.
+			/// </param>
+			/// <param name="asyncResult">
+			/// An optional DivertAsyncResult instance. If a valid instance is supplied, and the
+			/// function does not intercept a packet immediately (returning true), then the
+			/// DivertAsyncResult will be configured so that, at a later time, the user may call
+			/// DivertAsyncResult.Get(uint timeout) to attempt to fetch the results of the
+			/// asynchronous I/O operation.
+			/// 
+			/// The DivertAsyncResult object will be configured even in the event of an error, and
+			/// the user can use the provided members of DivertAsyncResult to determine if an error
+			/// occurred, what the error code was, etc.
+			/// </param>
+			/// <returns>
+			/// </returns>
+			bool SendAsync(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult);
+
+			/// <summary>
 			/// Close the handle. This can be called explicitly by the user or, if the user disposes
 			/// of the Diversion instance, the open handle will be closed automatically as the
 			/// object is cleaned up.
@@ -209,6 +288,38 @@ namespace Divert
 			/// get the error code following a false return value.
 			/// </returns>
 			bool Close();
+
+			/// <summary>
+			/// Sets a WinDivert parameter. 
+			/// </summary>
+			/// <param name="param">
+			/// The DivertParam to set the value of. See comments on DivertParam enum members for
+			/// specific parameter information.
+			/// </param>
+			/// <param name="value">
+			/// The value to set for the supplied parameter. 
+			/// </param>
+			/// <returns>
+			/// True if successful, false if an error occurred. Use Marshal.GetLastWin32Error() to
+			/// get the reason for the error.
+			/// </returns>
+			bool SetParam(DivertParam param, uint16_t value);
+
+			/// <summary>
+			/// Gets a WinDivert parameter value.
+			/// </summary>
+			/// <param name="">
+			/// The DivertParam to get the value of. See comments on DivertParam enum members for
+			/// specific parameter information.
+			/// </param>
+			/// <param name="value">
+			/// The value reference to populate with the actual value of the supplied parameter. 
+			/// </param>
+			/// <returns>
+			/// True if successful, false if an error occurred. Use Marshal.GetLastWin32Error() to
+			/// get the reason for the error.
+			/// </returns>
+			bool GetParam(DivertParam, uint16_t% value);
 
 		private:
 

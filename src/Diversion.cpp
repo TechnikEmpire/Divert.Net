@@ -162,7 +162,7 @@ namespace Divert
 
 			if (pb == nullptr)
 			{
-				// This shouldn't every happen, but TRUST NO 1
+				// This shouldn't ever happen, but TRUST NO 1
 				e = gcnew System::Exception(u8"In Diversion::Receive(array<System::Byte>^, Address^, out uint32_t) - Failed to pin packet buffer.");
 				throw e;
 			}
@@ -186,6 +186,8 @@ namespace Divert
 				throw e;
 			}
 
+			uint32_t recvLength = 0;
+
 			// If the user did not supply a valid DivertAsyncResult object, then the user does not care to wait for a pending
 			// result. In the Receive method, I can't imagine a scenario where this is useful. However, the parameter is
 			// optional. If the user has supplied a valid DivertAsyncResult object, then we need to pin the pointer of the 
@@ -200,13 +202,21 @@ namespace Divert
 
 				if (pb == nullptr)
 				{
-					// This shouldn't every happen, but TRUST NO 1
+					// This shouldn't ever happen, but TRUST NO 1
 					e = gcnew System::Exception(u8"In Diversion::ReceiveAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to pin packet buffer.");
 					throw e;
 				}
 
-				// XXX TODO - Attempt a read, if it fails, because the user did not provide an async result object, we just
+				//Attempt a read, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
+				if (!WinDivertRecvEx(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, 0, address->GetUnmanagedAddress(), &recvLength, nullptr))
+				{
+					return false;
+				}
+
+				// Read succeeded immediately, no waiting necessary.
+				receiveLength = recvLength;
+				return true;
 			}
 			else
 			{
@@ -234,9 +244,7 @@ namespace Divert
 					// Pointer of pinned array is null
 					e = gcnew System::Exception(u8"In Diversion::ReceiveAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to pin packet buffer.");
 					throw e;
-				}
-
-				uint32_t recvLength = 0;
+				}			
 
 				if (!WinDivertRecvEx(m_handle->GetUnmanagedHandle(), static_cast<void*>(bPtr), packetBuffer->Length, 0, address->GetUnmanagedAddress(), &recvLength, asyncResult->GetUnmanagedOverlapped()))
 				{
@@ -255,7 +263,127 @@ namespace Divert
 				return true;
 			}
 
-			return true;
+			return false;
+		}
+
+		bool Diversion::Send(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength)
+		{
+			System::Exception^ e = nullptr;
+
+			if (packetBuffer->Length == 0)
+			{
+				e = gcnew System::Exception(u8"In Diversion::Send(array<System::Byte>^, Address^, out uint32_t) - Supplied buffer has a length of zero. Cannot inject nothing.");
+				throw e;
+			}
+
+			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
+
+			unsigned char* pb = static_cast<unsigned char*>(byteArray);
+
+			if (pb == nullptr)
+			{
+				// This shouldn't ever happen, but TRUST NO 1
+				e = gcnew System::Exception(u8"In Diversion::Send(array<System::Byte>^, Address^, out uint32_t) - Failed to pin packet buffer.");
+				throw e;
+			}
+
+			uint32_t sendLen = 0;
+
+			int result = WinDivertSend(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, address->GetUnmanagedAddress(), &sendLen);
+
+			sendLength = sendLen;
+
+			return result == 1;
+		}
+
+		bool Diversion::SendAsync(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult)
+		{
+			System::Exception^ e = nullptr;
+
+			if (packetBuffer->Length == 0)
+			{
+				e = gcnew System::Exception(u8"In Diversion::SendAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Supplied buffer has a length of zero. Cannot inject nothing.");
+				throw e;
+			}
+
+			uint32_t sendLen = 0;
+
+			// If the user did not supply a valid DivertAsyncResult object, then the user does not care to wait for a pending
+			// result. This is desirable for more use cases, enabling a sort of "fire and forget" mechanism. If the user has 
+			// supplied a valid DivertAsyncResult object, then we need to pin the pointer of the supplied array inside the 
+			// DivertAsyncResult object, in order to preserve the buffer pointer under the async IO completes.
+			if (asyncResult == nullptr)
+			{
+				// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
+				pin_ptr<System::Byte> byteArray = &packetBuffer[0];
+
+				unsigned char* pb = static_cast<unsigned char*>(byteArray);
+
+				if (pb == nullptr)
+				{
+					// This shouldn't ever happen, but TRUST NO 1
+					e = gcnew System::Exception(u8"In Diversion::SendAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to pin packet buffer.");
+					throw e;
+				}
+
+				// Attempt a Send, if it fails, because the user did not provide an async result object, we just
+				// abandon the entire operation.
+				if (!WinDivertSendEx(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, 0, address->GetUnmanagedAddress(), &sendLen, nullptr))
+				{
+					return false;
+				}
+
+				// Send succeeded immediately, no waiting necessary.
+				sendLength = sendLen;
+				return true;
+			}
+			else
+			{
+				// In this instance, we can't rely on a pin_ptr. As such, we need to permanently pin the array
+				// and give the handle to the DivertAsyncResult object to manage. Once the user is done with the
+				// async result, it will release the handle, unpinning the address.
+				//
+				// We have to do this because we have no idea when the pointer provided to the WinDivert API will
+				// actually be used, since we're leaving that up to the user.
+				System::Runtime::InteropServices::GCHandle bufferHandle = System::Runtime::InteropServices::GCHandle::Alloc(packetBuffer, System::Runtime::InteropServices::GCHandleType::Pinned);
+
+				if (!asyncResult->Reset())
+				{
+					e = gcnew System::Exception(u8"In Diversion::SendAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to reset DivertAsyncResult.");
+					throw e;
+				}
+
+				asyncResult->Buffer = bufferHandle;
+				asyncResult->WinDivertHandle = m_handle;
+
+				System::IntPtr bPtr = bufferHandle.AddrOfPinnedObject();
+
+				if (bPtr == System::IntPtr::Zero)
+				{
+					// Pointer of pinned array is null
+					e = gcnew System::Exception(u8"In Diversion::SendAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to pin packet buffer.");
+					throw e;
+				}
+
+				if (!WinDivertSendEx(m_handle->GetUnmanagedHandle(), static_cast<void*>(bPtr), packetBuffer->Length, 0, address->GetUnmanagedAddress(), &sendLen, asyncResult->GetUnmanagedOverlapped()))
+				{
+					int lastError = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
+					if (lastError != ERROR_IO_PENDING)
+					{
+						// Send failed entirely
+						asyncResult->ErrorCode = lastError;
+						asyncResult->NoError = false;
+					}
+					return false;
+				}
+
+				// Send succeeded immediately, no waiting necessary.
+				asyncResult->Length = sendLen;
+				return true;
+			}
+
+			return false;
 		}
 
 		bool Diversion::Close()
@@ -266,6 +394,16 @@ namespace Divert
 			}
 
 			return false;
+		}
+
+		bool Diversion::SetParam(DivertParam param, uint16_t value)
+		{
+
+		}
+
+		bool Diversion::GetParam(DivertParam, uint16_t% value)
+		{
+
 		}
 
 	} /* namespace Net */
