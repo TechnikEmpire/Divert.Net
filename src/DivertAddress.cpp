@@ -30,7 +30,7 @@ namespace Divert
 	{
 		Address::Address()
 		{
-			m_address = new WINDIVERT_ADDRESS();
+			
 		}
 
 		Address::~Address()
@@ -42,14 +42,15 @@ namespace Divert
 		{
 			if (m_address != nullptr)
 			{
-				delete m_address;
+				// This pointer is provided by WinDivert and is not ours to manage.
+				m_address = nullptr;
 			}
 		}
 
 		Address::Address(PWINDIVERT_ADDRESS address)
 		{			
 			#ifndef NDEBUG
-			System::Diagnostics::Debug::Assert(address != nullptr, u8"Address::Address(PWINDIVERT_ADDRESS) - nullptr provided to constructor expecting non-null pointer argument.");
+			System::Diagnostics::Debug::Assert(address != nullptr, u8"In Address::Address(PWINDIVERT_ADDRESS) - nullptr provided to constructor expecting non-null pointer argument.");
 			#endif
 
 			m_address = address;
@@ -61,9 +62,15 @@ namespace Divert
 			{				
 				return m_address->IfIdx;				
 			}
-			else
+
+			return 0;
+		}
+
+		void Address::InterfaceIndex::set(uint32_t value)
+		{
+			if (m_address != nullptr)
 			{
-				return 0;
+				m_address->IfIdx = value;
 			}
 		}
 
@@ -73,9 +80,15 @@ namespace Divert
 			{
 				return m_address->SubIfIdx;
 			}
-			else
+
+			return 0;
+		}
+
+		void Address::SubInterfaceIndex::set(uint32_t value)
+		{
+			if (m_address != nullptr)
 			{
-				return 0;
+				m_address->SubIfIdx = value;
 			}
 		}
 
@@ -83,11 +96,17 @@ namespace Divert
 		{
 			if (m_address != nullptr)
 			{
-				return (DivertDirection)m_address->Direction;
+				return static_cast<DivertDirection>(m_address->Direction);
 			}
-			else
+
+			return DivertDirection::Inbound;
+		}
+
+		void Address::Direction::set(DivertDirection value)
+		{
+			if (m_address != nullptr)
 			{
-				return DivertDirection::Inbound;
+				m_address->Direction = static_cast<uint8_t>(value);
 			}
 		}
 

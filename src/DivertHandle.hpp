@@ -24,8 +24,7 @@
 
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <windivert.h>
 
 namespace Divert
 {
@@ -34,11 +33,12 @@ namespace Divert
 
 		/// <summary>
 		/// The DivertHandle class is meant to hold an open HANDLE* pointer, which should be
-		/// generated from functions such as WinDivertOpen, and is needed as a parameter to some
-		/// functions, such as the Send/Recv/Ex functions.
+		/// generated from functions such as WinDivertOpen. Handles are needed as a parameter to
+		/// some functions, such as the Send/Recv/Ex functions.
 		/// 
-		/// The pointer is hidden away from the .NET user and is handled in a way to "guarantee"
-		/// safety, so the code is valid for use without /unsafe.
+		/// Handles are also generated when using the Ex (async) functions. Regardless of where the
+		/// handle originated, if you have a valid handle, you must keep a reference of it. If you
+		/// don't, when the object is destroyed, it will close the handle.
 		/// </summary>
 		public ref class DivertHandle
 		{
@@ -89,7 +89,7 @@ namespace Divert
 			/// <param name="handle">
 			/// Unmanaged HANDLE to construct this wrapper around.
 			/// </param>
-			DivertHandle(HANDLE handle);
+			DivertHandle(HANDLE handle, const bool fromWinDivert);
 
 			/// <summary>
 			/// Internal accessor to the unmanaged handle object held by this object.
@@ -106,6 +106,16 @@ namespace Divert
 			/// library can access it, but it's kept away from the user.
 			/// </summary>
 			HANDLE m_handle = INVALID_HANDLE_VALUE;
+
+			/// <summary>
+			/// Depending on how the handle was created, we need to handle closing it differently.
+			/// If this handle was created from a WinDivertOpen(...) call, then it needs to be
+			/// closed through the WinDivert API. However, this library allows use of the Ex (async)
+			/// WinDivert methods, which will use HANDLE objects created through the WinAPI. Both
+			/// handles are wrapped by this same object, so this object must be aware of how to
+			/// treat the underlying native handle. The user needs not concern themselves with this.
+			/// </summary>
+			bool m_fromWinDivert = false;
 		};
 
 	} /* namespace Net */

@@ -338,6 +338,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <ClInclude Include="..\..\..\src\DivertICMPv6Header.hpp" />
     <ClInclude Include="..\..\..\src\DivertIpHeader.hpp" />
     <ClInclude Include="..\..\..\src\DivertIpv6Header.hpp" />
+    <ClInclude Include="..\..\..\src\DivertTCPHeader.hpp" />
+    <ClInclude Include="..\..\..\src\DivertUDPHeader.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -347,6 +349,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <ClCompile Include="..\..\..\src\DivertICMPv6Header.cpp" />
     <ClCompile Include="..\..\..\src\DivertIpHeader.cpp" />
     <ClCompile Include="..\..\..\src\DivertIpv6Header.cpp" />
+    <ClCompile Include="..\..\..\src\DivertTCPHeader.cpp" />
+    <ClCompile Include="..\..\..\src\DivertUDPHeader.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
   </ItemGroup>
   <ItemGroup>

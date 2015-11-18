@@ -31,17 +31,18 @@ namespace Divert
 {
 	namespace Net
 	{
+
 		/// <summary>
-		/// Represents the TCP header for an intercepted TCP packet.
+		/// Represents the UDP header for an intercepted UDP packet.
 		/// 
-		/// When a packet is intercepted and the headers are parsed, the packet may be a TCP
+		/// When a packet is intercepted and the headers are parsed, the packet may be an UDP
 		/// packet. If such is the case, this structure will be populated with all of the
-		/// information in the TCP packet header.
+		/// information in the UDP packet header.
 		/// 
 		/// More information here:
-		/// http://en.wikipedia.org/wiki/Transmission_Control_Protocol#TCP_segment_structure
+		/// https://en.wikipedia.org/wiki/User_Datagram_Protocol#Packet_structure
 		/// </summary>
-		ref class TCPHeader
+		ref class UDPHeader
 		{
 
 		public:
@@ -49,21 +50,21 @@ namespace Divert
 			/// <summary>
 			/// Default constructor.
 			/// </summary>
-			TCPHeader();
+			UDPHeader();
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
 			/// https://msdn.microsoft.com/library/ms177197(v=vs.100).aspx.
 			/// </summary>
-			~TCPHeader();
+			~UDPHeader();
 
 			/// <summary>
 			/// Finalizer for releasing unmanaged resources.
 			/// </summary>
-			!TCPHeader();
+			!UDPHeader();
 
 			/// <summary>
-			/// The source port that the TCP packet originates from. Note when reading/writing this
+			/// The source port that the UDP packet originates from. Note when reading/writing this
 			/// value, that although WinDivert stores this data in Network Byte Order, conversion is
 			/// done automatically on these values to and from Host to Network Byte Order.
 			/// 
@@ -79,9 +80,9 @@ namespace Divert
 			}
 
 			/// <summary>
-			/// The source port that the TCP packet is destined for. Note when reading/writing this
-			/// value, that although WinDivert stores this data in Network Byte Order, conversion is
-			/// done automatically on these values to and from Host to Network Byte Order.
+			/// The port that the UDP packet is destined to. Note when reading/writing this value,
+			/// that although WinDivert stores this data in Network Byte Order, conversion is done
+			/// automatically on these values to and from Host to Network Byte Order.
 			/// 
 			/// The purpose of this is to take the burden off the end user of having to sprinkle
 			/// conversion code everywhere that these values are read and modified.
@@ -94,85 +95,20 @@ namespace Divert
 				void set(uint16_t value);
 			}
 
-			property uint32_t SequenceNumber
-			{
-				uint32_t get();
-				void set(uint32_t value);
-			}
-
-			property uint32_t AcknowledgmentNumber
-			{
-				uint32_t get();
-				void set(uint32_t value);
-			}
-
-			property uint16_t Reserved1
+			/// <summary>
+			/// Specifies the length in bytes of the UDP header and UDP data.
+			/// </summary>
+			property uint16_t Length
 			{
 				uint16_t get();
 				void set(uint16_t value);
 			}
 
-			property uint16_t HeaderLength
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Fin
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Syn
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Rst
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Psh
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Ack
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Urg
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t Reserved2
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t WindowSize
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
+			/// <summary>
+			/// Packet checksum, can be used for error checking. Optional for IPv4, mandatory for
+			/// IPv6.
+			/// </summary>
 			property uint16_t Checksum
-			{
-				uint16_t get();
-				void set(uint16_t value);
-			}
-
-			property uint16_t UrgentPointer
 			{
 				uint16_t get();
 				void set(uint16_t value);
@@ -181,27 +117,27 @@ namespace Divert
 		internal:
 
 			/// <summary>
-			/// Allow internal construction with the supplied unmanaged TCP header.
+			/// Allow internal construction with the supplied unmanaged UDP header.
 			/// </summary>
 			/// <param name="address">
-			/// Unmanaged PWINDIVERT_TCPHDR to construct this wrapper around.
+			/// Unmanaged PWINDIVERT_UDPHDR to construct this wrapper around.
 			/// </param>
-			TCPHeader(PWINDIVERT_TCPHDR tcpHeader);
+			UDPHeader(PWINDIVERT_UDPHDR UDPHeader);
 
 			/// <summary>
-			/// Internal accessor to the unmanaged PWINDIVERT_TCPHDR object held by this object. 
+			/// Internal accessor to the unmanaged PWINDIVERT_UDPHDR object held by this object. 
 			/// </summary>
 			/// <returns>
-			/// The unmanaged PWINDIVERT_TCPHDR member.
+			/// The unmanaged PWINDIVERT_UDPHDR member.
 			/// </returns>
-			PWINDIVERT_TCPHDR GetUnmanagedTCPHeader();
+			PWINDIVERT_UDPHDR GetUnmanagedUDPHeader();
 
 		private:
 
-			/// Privately held PWINDIVERT_TCPHDR member. Exposed internally only so that other
+			/// Privately held PWINDIVERT_UDPHDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
-			PWINDIVERT_TCPHDR m_tcpHeader = nullptr;
+			PWINDIVERT_UDPHDR m_udpHeader = nullptr;
 
 		};
 

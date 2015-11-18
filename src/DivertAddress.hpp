@@ -34,7 +34,7 @@ namespace Divert
 		/// <summary>
 		/// Used to determine the direction of captured packets.
 		/// </summary>
-		public enum class DivertDirection
+		public enum class DivertDirection : uint8_t
 		{
 			Outbound = 0,
 			Inbound = 1
@@ -51,9 +51,7 @@ namespace Divert
 		public:
 
 			/// <summary>
-			/// Default constructor for the Address object. This internally allocates a
-			/// WINDIVERT_ADDRESS object which is supplied internally to the unmanaged side of
-			/// send/recv methods.
+			/// Default constructor for the Address object.
 			/// </summary>
 			Address();
 
@@ -76,6 +74,7 @@ namespace Divert
 			property uint32_t InterfaceIndex
 			{
 				uint32_t get();
+				void set(uint32_t value);
 			}
 
 			// <summary>
@@ -85,6 +84,7 @@ namespace Divert
 			property uint32_t SubInterfaceIndex
 			{
 				uint32_t get();
+				void set(uint32_t value);
 			}
 
 			/// <summary>
@@ -93,6 +93,7 @@ namespace Divert
 			property DivertDirection Direction
 			{
 				DivertDirection get();
+				void set(DivertDirection value);
 			}
 
 		internal:

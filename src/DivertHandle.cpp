@@ -31,6 +31,7 @@ namespace Divert
 
 		DivertHandle::DivertHandle()
 		{
+
 		}
 
 		DivertHandle::~DivertHandle()
@@ -41,22 +42,32 @@ namespace Divert
 		DivertHandle::!DivertHandle()
 		{
 			Close();
+
+			m_handle = INVALID_HANDLE_VALUE;
 		}
 
-		DivertHandle::DivertHandle(HANDLE handle)
+		DivertHandle::DivertHandle(HANDLE handle, const bool fromWinDivert)
 		{
 			#ifndef NDEBUG
 			System::Diagnostics::Debug::Assert(handle != nullptr, u8"In DivertHandle::DivertHandle(HANDLE) - nullptr provided to constructor expecting non-null pointer argument.");
 			#endif
 
 			m_handle = handle;
+			m_fromWinDivert = fromWinDivert;
 		}
 
 		bool DivertHandle::Close()
 		{
 			if (Valid)
 			{
-				return CloseHandle(m_handle) != 0;
+				if (m_fromWinDivert)
+				{
+					return WinDivertClose(m_handle);
+				}
+				else
+				{
+					return CloseHandle(m_handle) != 0;
+				}				
 			}
 			else
 			{
