@@ -331,9 +331,14 @@ namespace Divert
 			m_lastDstAddr = intAddress;
 		}
 
-		PWINDIVERT_IPHDR IPHeader::GetUnmanagedIPHeader()
+		PWINDIVERT_IPHDR IPHeader::UnmanagedHeader::get()
 		{
 			return m_ipHeader;
+		}
+
+		void IPHeader::UnmanagedHeader::set(PWINDIVERT_IPHDR value)
+		{
+			m_ipHeader = value;
 		}
 
 		void IPHeader::Init()

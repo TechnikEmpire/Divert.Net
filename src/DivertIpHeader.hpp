@@ -162,7 +162,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_IPHDR member.
 			/// </returns>
-			PWINDIVERT_IPHDR GetUnmanagedIPHeader();
+			property PWINDIVERT_IPHDR UnmanagedHeader
+			{
+				PWINDIVERT_IPHDR get();
+				void set(PWINDIVERT_IPHDR value);
+			}
 
 		private:
 

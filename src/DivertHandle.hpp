@@ -98,7 +98,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged HANDLE member, regardless of its validity.
 			/// </returns>
-			const HANDLE GetUnmanagedHandle();
+			property HANDLE UnmanagedHandle
+			{
+				HANDLE get();
+				void set(HANDLE value);
+			}
 
 		private:
 

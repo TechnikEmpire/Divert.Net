@@ -112,7 +112,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_ADDRESS member. Should always be a valid pointer. 
 			/// </returns>
-			const PWINDIVERT_ADDRESS GetUnmanagedAddress();
+			property PWINDIVERT_ADDRESS UnmanagedAddress
+			{
+				PWINDIVERT_ADDRESS get();
+				void set(PWINDIVERT_ADDRESS value);
+			}
 
 		private:
 

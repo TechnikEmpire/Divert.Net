@@ -88,8 +88,8 @@ namespace Divert
 			// got created. So, we return false, set noError to false to let the user
 			// know the operation failed. That's all that can be done.
 			if (m_overlappedEventHandle == nullptr ||
-				m_overlappedEventHandle->GetUnmanagedHandle() == nullptr || 
-				m_overlappedEventHandle->GetUnmanagedHandle() == INVALID_HANDLE_VALUE
+				m_overlappedEventHandle->UnmanagedHandle == nullptr ||
+				m_overlappedEventHandle->UnmanagedHandle == INVALID_HANDLE_VALUE
 				)
 			{
 				m_noError = false;
@@ -100,15 +100,15 @@ namespace Divert
 			// got created. So, we return false, set noError to false to let the user
 			// know the operation failed. That's all that can be done.
 			if (m_winDivertHandle == nullptr ||
-				m_winDivertHandle->GetUnmanagedHandle() == nullptr ||
-				m_winDivertHandle->GetUnmanagedHandle() == INVALID_HANDLE_VALUE
+				m_winDivertHandle->UnmanagedHandle == nullptr ||
+				m_winDivertHandle->UnmanagedHandle == INVALID_HANDLE_VALUE
 				)
 			{
 				m_noError = false;
 				return false;
 			}
 
-			switch (WaitForSingleObject(m_overlappedEventHandle->GetUnmanagedHandle(), timeoutInMilliseconds))
+			switch (WaitForSingleObject(m_overlappedEventHandle->UnmanagedHandle, timeoutInMilliseconds))
 			{
 				case WAIT_OBJECT_0:
 					m_noError = true;
@@ -123,7 +123,7 @@ namespace Divert
 			if (m_noError == true)
 			{
 				DWORD ioLength;
-				if (!GetOverlappedResult(m_winDivertHandle->GetUnmanagedHandle(), m_overlapped, &ioLength, TRUE))
+				if (!GetOverlappedResult(m_winDivertHandle->UnmanagedHandle, m_overlapped, &ioLength, TRUE))
 				{
 					m_errorCode = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
 					m_noError = false;
@@ -153,6 +153,8 @@ namespace Divert
 
 				return true;
 			}
+
+			return false;
 		}
 
 		System::Runtime::InteropServices::GCHandle DivertAsyncResult::Buffer::get()
@@ -185,9 +187,14 @@ namespace Divert
 			m_overlappedEventHandle = value;
 		}
 
-		OVERLAPPED* DivertAsyncResult::GetUnmanagedOverlapped()
+		OVERLAPPED* DivertAsyncResult::UnmanagedOverlapped::get()
 		{
 			return m_overlapped;
+		}
+
+		void DivertAsyncResult::UnmanagedOverlapped::set(OVERLAPPED* value)
+		{
+			m_overlapped = value;
 		}
 
 		void DivertAsyncResult::Init()

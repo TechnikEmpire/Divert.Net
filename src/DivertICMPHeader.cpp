@@ -129,9 +129,14 @@ namespace Divert
 			}
 		}
 
-		PWINDIVERT_ICMPHDR ICMPHeader::GetUnmanagedICMPHeader()
+		PWINDIVERT_ICMPHDR ICMPHeader::UnmanagedHeader::get()
 		{
 			return m_icmpHeader;
+		}
+
+		void ICMPHeader::UnmanagedHeader::set(PWINDIVERT_ICMPHDR value)
+		{
+			m_icmpHeader = value;
 		}
 
 	} /* namespace Net */

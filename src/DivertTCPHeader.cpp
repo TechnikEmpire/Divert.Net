@@ -345,9 +345,14 @@ namespace Divert
 			}
 		}
 
-		PWINDIVERT_TCPHDR TCPHeader::GetUnmanagedTCPHeader()
+		PWINDIVERT_TCPHDR TCPHeader::UnmanagedHeader::get()
 		{
 			return m_tcpHeader;
+		}
+
+		void TCPHeader::UnmanagedHeader::set(PWINDIVERT_TCPHDR value)
+		{
+			m_tcpHeader = value;
 		}
 
 	} /* namespace Net */

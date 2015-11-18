@@ -130,9 +130,14 @@ namespace Divert
 			}
 		}
 
-		PWINDIVERT_UDPHDR UDPHeader::GetUnmanagedUDPHeader()
+		PWINDIVERT_UDPHDR UDPHeader::UnmanagedHeader::get()
 		{
 			return m_udpHeader;
+		}
+
+		void UDPHeader::UnmanagedHeader::set(PWINDIVERT_UDPHDR value)
+		{
+			m_udpHeader = value;
 		}
 
 	} /* namespace Net */

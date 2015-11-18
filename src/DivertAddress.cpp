@@ -110,9 +110,14 @@ namespace Divert
 			}
 		}
 
-		const PWINDIVERT_ADDRESS Address::GetUnmanagedAddress()
+		PWINDIVERT_ADDRESS Address::UnmanagedAddress::get()
 		{
 			return m_address;
+		}
+
+		void Address::UnmanagedAddress::set(PWINDIVERT_ADDRESS value)
+		{
+			m_address = value;
 		}
 
 	} /* namespace Net */

@@ -51,18 +51,95 @@ namespace Divert
 			NetworkForward = 1
 		};
 
+		/// <summary>
+		/// Flag summaries copied from:
+		/// https://reqrypt.org/windivert-doc.html#divert_helper_parse_packet
+		/// </summary>
 		[System::Flags]
 		public enum class FilterFlags : uint64_t
 		{
+			/// <summary>
+			/// By default WinDivert ensures that each diverted packet has a valid checksum. If the
+			/// checksum is missing (e.g. with TCP checksum offloading), WinDivert will calculate it
+			/// before passing the packet to the user application. This flag disables this behavior.
+			/// </summary>
 			[System::Obsolete(u8"As of WinDivert 1.2, the NoChecksum attribute is deprecated, because the default behavior of the library is now to no longer automatically calculate checksums.")]
 			NoChecksum = 0,
+			
+			/// <summary>
+			/// This flag opens the WinDivert handle in packet sniffing mode. In packet sniffing
+			/// mode the original packet is not dropped-and-diverted (the default) but
+			/// copied-and-diverted. This mode is useful for implementing packet sniffing tools
+			/// similar to those applications that currently use Winpcap.
+			/// </summary>
 			Sniff = 1,
+
+			/// <summary>
+			/// This flag indicates that the user application does not intend to read matching
+			/// packets with WinDivertRecv(), instead the packets should be silently dropped. This
+			/// is useful for implementing simple packet filters using the WinDivert filter
+			/// language.
+			/// </summary>
 			Drop = 2
 		};
+
+		/// <summary>
+		/// Flag summaries copied from:
+		/// https://reqrypt.org/windivert-doc.html#divert_helper_calc_checksums
+		/// </summary>
+		[System::Flags]
+		public enum class ChecksumCalculationFlags : uint64_t
+		{
+			/// <summary>
+			/// Do not calculate the IPv4 checksum.
+			/// </summary>
+			NoIpChecksum = 1,
+
+			/// <summary>
+			/// Do not calculate the ICMP checksum.
+			/// </summary>
+			NoIcmpChecksum = 2,
+
+			/// <summary>
+			/// Do not calculate the ICMPv6 checksum.
+			/// </summary>
+			NoIcmpV6Checksum = 4,
+
+			/// <summary>
+			///  Do not calculate the TCP checksum.
+			/// </summary>
+			NoTcpChecksum = 8,
+
+			/// <summary>
+			/// Do not calculate the UDP checksum.
+			/// </summary>
+			NoUdpChecksum = 16,
+
+			/// <summary>
+			/// Non-zero checksum fields should not be replaced.
+			/// </summary>
+			NoReplace = 2048
+		};
 	
+		/// <summary>
+		/// https://reqrypt.org/windivert-doc.html#divert_set_param
+		/// </summary>
 		public enum class DivertParam
 		{
+			/// <summary>
+			/// Sets the maximum length of the packet queue for WinDivertRecv(). Currently the
+			/// default value is 512, the minimum is 1, and the maximum is 8192.
+			/// </summary>
 			QueueLength = 0,
+
+			/// <summary>
+			/// Sets the minimum time, in milliseconds, a packet can be queued before it is
+			/// automatically dropped. Packets cannot be queued indefinitely, and ideally, packets
+			/// should be processed by the application as soon as is possible. Note that this sets
+			/// the minimum time a packet can be queued before it can be dropped. The actual time
+			/// may be exceed this value. Currently the default value is 512, the minimum is 128,
+			/// and the maximum is 2048.
+			/// </summary>
 			QueueTime = 1
 		};
 
@@ -290,7 +367,8 @@ namespace Divert
 			bool Close();
 
 			/// <summary>
-			/// Sets a WinDivert parameter. 
+			/// Sets a WinDivert parameter. More information here:
+			/// https://reqrypt.org/windivert-doc.html#divert_get_param
 			/// </summary>
 			/// <param name="param">
 			/// The DivertParam to set the value of. See comments on DivertParam enum members for
@@ -303,10 +381,11 @@ namespace Divert
 			/// True if successful, false if an error occurred. Use Marshal.GetLastWin32Error() to
 			/// get the reason for the error.
 			/// </returns>
-			bool SetParam(DivertParam param, uint16_t value);
+			bool SetParam(DivertParam param, uint64_t value);
 
 			/// <summary>
-			/// Gets a WinDivert parameter value.
+			/// Gets a WinDivert parameter value. More information here:
+			/// https://reqrypt.org/windivert-doc.html#divert_set_param
 			/// </summary>
 			/// <param name="">
 			/// The DivertParam to get the value of. See comments on DivertParam enum members for
@@ -319,7 +398,100 @@ namespace Divert
 			/// True if successful, false if an error occurred. Use Marshal.GetLastWin32Error() to
 			/// get the reason for the error.
 			/// </returns>
-			bool GetParam(DivertParam, uint16_t% value);
+			bool GetParam(DivertParam param, uint64_t% value);
+
+			/// <summary>
+			/// Parses a raw packet (e.g. from WinDivertRecv()) into the various packet headers
+			/// and/or payloads that may or may not be present. More information here:
+			/// https://reqrypt.org/windivert-doc.html#divert_helper_parse_packet
+			/// </summary>
+			/// <param name="packetBuffer">
+			/// A valid array populated with packet data from a previously successful call to one of
+			/// the Receive methods.
+			/// </param>
+			/// <param name="ipHeader">
+			/// The IPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="ipv6Header">
+			/// The IPv6Header object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="icmpHeader">
+			/// The ICMPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="icmpv6Header">
+			/// The ICMPv6Header object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="tcpHeader">
+			/// The TCPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="udpHeader">
+			/// The UDPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <returns>
+			/// True if all expected (non-NULL) outputs were present, false otherwise. Note that
+			/// FALSE may sometimes be a legitimate return value, e.g., when both ppIpHdr and
+			/// ppIpv6Hdr are non-NULL.
+			/// </returns>
+			bool ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader);
+
+			/// <summary>
+			/// Parses a raw packet (e.g. from WinDivertRecv()) into the various packet headers
+			/// and/or payloads that may or may not be present. More information here:
+			/// https://reqrypt.org/windivert-doc.html#divert_helper_parse_packet
+			/// 
+			/// This overload provides the ability to fetch an array populated with just the data
+			/// portion of the captured packet.
+			/// </summary>
+			/// <param name="packetBuffer">
+			/// A valid array populated with packet data from a previously successful call to one of
+			/// the Receive methods.
+			/// </param>
+			/// <param name="ipHeader">
+			/// The IPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="ipv6Header">
+			/// The IPv6Header object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="icmpHeader">
+			/// The ICMPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="icmpv6Header">
+			/// The ICMPv6Header object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="tcpHeader">
+			/// The TCPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="udpHeader">
+			/// The UDPHeader object to populate. Optional, pass null if not desired.
+			/// </param>
+			/// <param name="packetData">
+			/// A reference to populate to the copied packet payload.
+			/// </param>
+			/// <returns>
+			/// True if all expected (non-NULL) outputs were present, false otherwise. Note that
+			/// FALSE may sometimes be a legitimate return value, e.g., when both ppIpHdr and
+			/// ppIpv6Hdr are non-NULL.
+			/// </returns>
+			bool ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader, [System::Runtime::InteropServices::Out]array<System::Byte>^% packetData);
+
+			/// <summary>
+			/// (Re)calculates the checksum for any IPv4/ICMP/ICMPv6/TCP/UDP checksum present in the
+			/// given packet. Individual checksum calculations may be disabled via the appropriate
+			/// flag. Typically this function should be invoked on a modified packet before it is
+			/// injected with WinDivertSend(). More information here:
+			/// https://reqrypt.org/windivert-doc.html#divert_helper_calc_checksums
+			/// </summary>
+			/// <param name="packetBuffer">
+			/// An array containing the packet data to calculate the checksums for. 
+			/// </param>
+			/// <param name="flags">
+			/// Checksum calculation flags. Adjust which headers have the checksums calculated for
+			/// with these flags.
+			/// </param>
+			/// <returns>
+			/// The number of checksums calculated.
+			/// </returns>
+			uint32_t CalculateChecksums(array<System::Byte>^ packetBuffer, ChecksumCalculationFlags flags);
 
 		private:
 

@@ -130,7 +130,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_UDPHDR member.
 			/// </returns>
-			PWINDIVERT_UDPHDR GetUnmanagedUDPHeader();
+			property PWINDIVERT_UDPHDR UnmanagedHeader
+			{
+				PWINDIVERT_UDPHDR get();
+				void set(PWINDIVERT_UDPHDR value);
+			}
 
 		private:
 

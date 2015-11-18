@@ -127,7 +127,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged OVERLAPPED* member.
 			/// </returns>
-			OVERLAPPED* GetUnmanagedOverlapped();
+			property OVERLAPPED* UnmanagedOverlapped
+			{
+				OVERLAPPED* get();
+				void set(OVERLAPPED* value);
+			}
 
 			/// <summary>
 			/// Some specialized initiation is required, regardless of constructor.

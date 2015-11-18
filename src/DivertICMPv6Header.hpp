@@ -102,7 +102,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_ICMPV6HDR member.
 			/// </returns>
-			PWINDIVERT_ICMPV6HDR GetUnmanagedICMPv6Header();
+			property PWINDIVERT_ICMPV6HDR UnmanagedHeader
+			{
+				PWINDIVERT_ICMPV6HDR get();
+				void set(PWINDIVERT_ICMPV6HDR value);
+			}
 
 		private:
 

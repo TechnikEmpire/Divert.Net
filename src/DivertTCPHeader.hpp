@@ -194,7 +194,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_TCPHDR member.
 			/// </returns>
-			PWINDIVERT_TCPHDR GetUnmanagedTCPHeader();
+			property PWINDIVERT_TCPHDR UnmanagedHeader
+			{
+				PWINDIVERT_TCPHDR get();
+				void set(PWINDIVERT_TCPHDR value);
+			}
 
 		private:
 

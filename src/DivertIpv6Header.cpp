@@ -254,9 +254,14 @@ namespace Divert
 			m_destinationAddress = value;
 		}
 
-		PWINDIVERT_IPV6HDR IPv6Header::GetUnmanagedIPv6Header()
+		PWINDIVERT_IPV6HDR IPv6Header::UnmanagedHeader::get()
 		{
 			return m_ipv6Header;
+		}
+
+		void IPv6Header::UnmanagedHeader::set(PWINDIVERT_IPV6HDR value)
+		{
+			m_ipv6Header = value;
 		}
 
 		void IPv6Header::Init()

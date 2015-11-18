@@ -122,7 +122,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_IPV6HDR member.
 			/// </returns>
-			PWINDIVERT_IPV6HDR GetUnmanagedIPv6Header();
+			property PWINDIVERT_IPV6HDR UnmanagedHeader
+			{
+				PWINDIVERT_IPV6HDR get();
+				void set(PWINDIVERT_IPV6HDR value);
+			}
 
 		private:
 

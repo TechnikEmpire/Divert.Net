@@ -80,9 +80,14 @@ namespace Divert
 			return m_handle != INVALID_HANDLE_VALUE;
 		}
 
-		const HANDLE DivertHandle::GetUnmanagedHandle()
+		HANDLE DivertHandle::UnmanagedHandle::get()
 		{
 			return m_handle;
+		}
+
+		void DivertHandle::UnmanagedHandle::set(HANDLE value)
+		{
+			m_handle = value;
 		}
 
 	} /* namespace Net */

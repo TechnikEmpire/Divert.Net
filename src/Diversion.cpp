@@ -169,7 +169,7 @@ namespace Divert
 			
 			uint32_t readLen = 0;
 
-			int result = WinDivertRecv(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, address->GetUnmanagedAddress(), &readLen);
+			int result = WinDivertRecv(m_handle->UnmanagedHandle, pb, packetBuffer->Length, address->UnmanagedAddress, &readLen);
 
 			receiveLength = readLen;
 
@@ -209,7 +209,7 @@ namespace Divert
 
 				//Attempt a read, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
-				if (!WinDivertRecvEx(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, 0, address->GetUnmanagedAddress(), &recvLength, nullptr))
+				if (!WinDivertRecvEx(m_handle->UnmanagedHandle, pb, packetBuffer->Length, 0, address->UnmanagedAddress, &recvLength, nullptr))
 				{
 					return false;
 				}
@@ -246,7 +246,7 @@ namespace Divert
 					throw e;
 				}			
 
-				if (!WinDivertRecvEx(m_handle->GetUnmanagedHandle(), static_cast<void*>(bPtr), packetBuffer->Length, 0, address->GetUnmanagedAddress(), &recvLength, asyncResult->GetUnmanagedOverlapped()))
+				if (!WinDivertRecvEx(m_handle->UnmanagedHandle, static_cast<void*>(bPtr), packetBuffer->Length, 0, address->UnmanagedAddress, &recvLength, asyncResult->UnmanagedOverlapped))
 				{
 					int lastError = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
 					if (lastError != ERROR_IO_PENDING)
@@ -290,7 +290,7 @@ namespace Divert
 
 			uint32_t sendLen = 0;
 
-			int result = WinDivertSend(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, address->GetUnmanagedAddress(), &sendLen);
+			int result = WinDivertSend(m_handle->UnmanagedHandle, pb, packetBuffer->Length, address->UnmanagedAddress, &sendLen);
 
 			sendLength = sendLen;
 
@@ -329,7 +329,7 @@ namespace Divert
 
 				// Attempt a Send, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
-				if (!WinDivertSendEx(m_handle->GetUnmanagedHandle(), pb, packetBuffer->Length, 0, address->GetUnmanagedAddress(), &sendLen, nullptr))
+				if (!WinDivertSendEx(m_handle->UnmanagedHandle, pb, packetBuffer->Length, 0, address->UnmanagedAddress, &sendLen, nullptr))
 				{
 					return false;
 				}
@@ -366,7 +366,7 @@ namespace Divert
 					throw e;
 				}
 
-				if (!WinDivertSendEx(m_handle->GetUnmanagedHandle(), static_cast<void*>(bPtr), packetBuffer->Length, 0, address->GetUnmanagedAddress(), &sendLen, asyncResult->GetUnmanagedOverlapped()))
+				if (!WinDivertSendEx(m_handle->UnmanagedHandle, static_cast<void*>(bPtr), packetBuffer->Length, 0, address->UnmanagedAddress, &sendLen, asyncResult->UnmanagedOverlapped))
 				{
 					int lastError = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
 					if (lastError != ERROR_IO_PENDING)
@@ -396,14 +396,195 @@ namespace Divert
 			return false;
 		}
 
-		bool Diversion::SetParam(DivertParam param, uint16_t value)
+		bool Diversion::SetParam(DivertParam param, uint64_t value)
 		{
+			// No. No you may not. Seriously though this shouldn't happen.
+			if (m_handle == nullptr ||
+				m_handle->UnmanagedHandle == nullptr ||
+				m_handle->UnmanagedHandle == INVALID_HANDLE_VALUE
+				)
+			{				
+				return false;
+			}
 
+			int result = WinDivertSetParam(m_handle->UnmanagedHandle, static_cast<WINDIVERT_PARAM>(param), value);
+
+			return result == 1;
 		}
 
-		bool Diversion::GetParam(DivertParam, uint16_t% value)
+		bool Diversion::GetParam(DivertParam param, uint64_t% value)
 		{
+			// No. No you may not. Seriously though this shouldn't happen.
+			if (m_handle == nullptr ||
+				m_handle->UnmanagedHandle == nullptr ||
+				m_handle->UnmanagedHandle == INVALID_HANDLE_VALUE
+				)
+			{
+				return false;
+			}
 
+			uint64_t retVal = 0;
+			int result = WinDivertGetParam(m_handle->UnmanagedHandle, static_cast<WINDIVERT_PARAM>(param), &retVal);
+
+			return result == 1;
+		}
+
+		bool Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader)
+		{
+			// Ewww, code duplication. Oh well, this was the simplest way to provide the full functionality of the WinDivert parse packet function.
+
+			System::Exception^ e = nullptr;
+
+			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
+
+			unsigned char* pb = static_cast<unsigned char*>(byteArray);
+
+			if (pb == nullptr)
+			{
+				// This shouldn't ever happen, but TRUST NO 1
+				e = gcnew System::Exception(u8"In Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^, IPv6Header^, ICMPHeader^, ICMPv6Header^, TCPHeader^, UDPHeader^) - Failed to pin packet buffer.");
+				throw e;
+			}
+
+			PWINDIVERT_IPHDR umpipV4Header = nullptr;
+			PWINDIVERT_IPV6HDR umpipV6Header = nullptr;
+			PWINDIVERT_UDPHDR umpudpHeader = nullptr;
+			PWINDIVERT_TCPHDR umptcpHeader = nullptr;
+			PWINDIVERT_ICMPHDR umpicmpHeader = nullptr;
+			PWINDIVERT_ICMPV6HDR umpicmpV6Header = nullptr;
+
+			uint32_t packetDataLength = 0;
+			char* packetDataPointer = nullptr;
+
+			int retVal = 0;
+
+			retVal = WinDivertHelperParsePacket(pb, packetBuffer->Length, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
+
+			if (ipHeader != nullptr && umpipV4Header != nullptr)
+			{
+				ipHeader->UnmanagedHeader = umpipV4Header;
+			}
+
+			if (ipv6Header != nullptr && umpipV6Header != nullptr)
+			{
+				ipv6Header->UnmanagedHeader = umpipV6Header;
+			}
+
+			if (icmpHeader != nullptr && umpicmpHeader != nullptr)
+			{
+				icmpHeader->UnmanagedHeader = umpicmpHeader;
+			}
+
+			if (icmpv6Header != nullptr && umpicmpV6Header != nullptr)
+			{
+				icmpv6Header->UnmanagedHeader = umpicmpV6Header;
+			}
+
+			if (tcpHeader != nullptr && umptcpHeader != nullptr)
+			{
+				tcpHeader->UnmanagedHeader = umptcpHeader;
+			}
+
+			if (udpHeader != nullptr && umpudpHeader != nullptr)
+			{
+				udpHeader->UnmanagedHeader = umpudpHeader;
+			}
+
+			return retVal == 1;
+		}
+
+		bool Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader, array<System::Byte>^% packetData)
+		{
+			System::Exception^ e = nullptr;
+
+			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
+
+			unsigned char* pb = static_cast<unsigned char*>(byteArray);
+
+			if (pb == nullptr)
+			{
+				// This shouldn't ever happen, but TRUST NO 1
+				e = gcnew System::Exception(u8"In Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^, IPv6Header^, ICMPHeader^, ICMPv6Header^, TCPHeader^, UDPHeader^, array<System::Byte>^%) - Failed to pin packet buffer.");
+				throw e;
+			}			
+
+			PWINDIVERT_IPHDR umpipV4Header = nullptr;
+			PWINDIVERT_IPV6HDR umpipV6Header = nullptr;
+			PWINDIVERT_UDPHDR umpudpHeader = nullptr;
+			PWINDIVERT_TCPHDR umptcpHeader = nullptr;
+			PWINDIVERT_ICMPHDR umpicmpHeader = nullptr;
+			PWINDIVERT_ICMPV6HDR umpicmpV6Header = nullptr;
+
+			uint32_t packetDataLength = 0;
+			char* packetDataPointer = nullptr;
+
+			int retVal = 0;
+
+			retVal = WinDivertHelperParsePacket(pb, packetBuffer->Length, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
+
+			packetData = gcnew array<System::Byte>(packetDataLength);
+
+			if (packetDataLength > 0 && packetDataPointer != nullptr)
+			{
+				System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void*)packetDataPointer), packetData, 0, packetDataLength);
+			}	
+
+			if (ipHeader != nullptr && umpipV4Header != nullptr)
+			{
+				ipHeader->UnmanagedHeader = umpipV4Header;
+			}
+
+			if (ipv6Header != nullptr && umpipV6Header != nullptr)
+			{
+				ipv6Header->UnmanagedHeader = umpipV6Header;
+			}
+
+			if (icmpHeader != nullptr && umpicmpHeader != nullptr)
+			{
+				icmpHeader->UnmanagedHeader = umpicmpHeader;
+			}
+
+			if (icmpv6Header != nullptr && umpicmpV6Header != nullptr)
+			{
+				icmpv6Header->UnmanagedHeader = umpicmpV6Header;
+			}
+
+			if (tcpHeader != nullptr && umptcpHeader != nullptr)
+			{
+				tcpHeader->UnmanagedHeader = umptcpHeader;
+			}
+
+			if (udpHeader != nullptr && umpudpHeader != nullptr)
+			{
+				udpHeader->UnmanagedHeader = umpudpHeader;
+			}
+
+			return retVal == 1;
+		}
+
+		uint32_t Diversion::CalculateChecksums(array<System::Byte>^ packetBuffer, ChecksumCalculationFlags flags)
+		{
+			System::Exception^ e = nullptr;
+
+			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
+
+			unsigned char* pb = static_cast<unsigned char*>(byteArray);
+
+			if (pb == nullptr)
+			{
+				// This shouldn't ever happen, but TRUST NO 1
+				e = gcnew System::Exception(u8"In Diversion::CalculateChecksums(array<System::Byte>^, ChecksumCalculationFlags) - Failed to pin packet buffer.");
+				throw e;
+			}
+
+			uint64_t flagsInt = (uint64_t)System::Convert::ChangeType(flags, System::UInt64::typeid);
+
+			int retVal = WinDivertHelperCalcChecksums(pb, packetBuffer->Length, flagsInt);
+
+			return retVal == 1;
 		}
 
 	} /* namespace Net */

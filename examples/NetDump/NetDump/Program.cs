@@ -21,6 +21,8 @@ namespace NetDump
 
             
             d.ReceiveAsync(someBuffer, add, ref someNumber);
+
+            d.ParsePacket(someBuffer, null, null, null, null, null, null);
         }
     }
 }

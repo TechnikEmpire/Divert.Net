@@ -102,7 +102,11 @@ namespace Divert
 			/// <returns>
 			/// The unmanaged PWINDIVERT_ICMPHDR member.
 			/// </returns>
-			PWINDIVERT_ICMPHDR GetUnmanagedICMPHeader();
+			property PWINDIVERT_ICMPHDR UnmanagedHeader
+			{
+				PWINDIVERT_ICMPHDR get();
+				void set(PWINDIVERT_ICMPHDR value);
+			}
 
 		private:
 
