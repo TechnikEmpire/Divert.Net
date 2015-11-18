@@ -64,11 +64,19 @@ namespace NetDump
 
                 if (ipHeader.Valid && tcpHeader.Valid)
                 {
-                    Console.WriteLine("{0} TCP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(), ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString());
+                    Console.WriteLine("{0} IPv4 TCP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(), ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString());
                 }
                 else if(ipHeader.Valid && udpHeader.Valid)
                 {
-                    Console.WriteLine("{0} UDP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipHeader.DestinationAddress.ToString(), udpHeader.DestinationPort.ToString(), ipHeader.SourceAddress.ToString(), udpHeader.SourcePort.ToString());
+                    Console.WriteLine("{0} IPv4 UDP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipHeader.DestinationAddress.ToString(), udpHeader.DestinationPort.ToString(), ipHeader.SourceAddress.ToString(), udpHeader.SourcePort.ToString());
+                }
+                else if(ipv6Header.Valid && tcpHeader.Valid)
+                {
+                    Console.WriteLine("{0} IPv6 TCP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipv6Header.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(), ipv6Header.SourceAddress.ToString(), tcpHeader.SourcePort.ToString());
+                }
+                else if (ipv6Header.Valid && udpHeader.Valid)
+                {
+                    Console.WriteLine("{0} IPv6 UDP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipv6Header.DestinationAddress.ToString(), udpHeader.DestinationPort.ToString(), ipv6Header.SourceAddress.ToString(), udpHeader.SourcePort.ToString());
                 }
             }
 
