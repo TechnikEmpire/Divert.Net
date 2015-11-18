@@ -17,8 +17,12 @@ ide/Divert.Net/Divert.Net/Intermediates
 
 # Build results
 [Dd]ebug/
+[Dd]ebug x86/
+[Dd]ebug x64/
 [Dd]ebugPublic/
 [Rr]elease/
+[Rr]elease x86/
+[Rr]elease x64/
 [Rr]eleases/
 x64/
 x86/

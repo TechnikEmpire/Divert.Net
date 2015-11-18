@@ -131,12 +131,7 @@ namespace Divert
 			{
 				OVERLAPPED* get();
 				void set(OVERLAPPED* value);
-			}
-
-			/// <summary>
-			/// Some specialized initiation is required, regardless of constructor.
-			/// </summary>
-			void Init();
+			}			
 
 			/// <summary>
 			/// Resets the objects unmanaged internals so that it can be reconfigured for a new
@@ -192,6 +187,11 @@ namespace Divert
 			/// completions, it's necessary to pin the array.
 			/// </summary>
 			System::Runtime::InteropServices::GCHandle m_buffer;
+
+			/// <summary>
+			/// Some specialized initiation is required, regardless of constructor.
+			/// </summary>
+			void Init();
 
 		};
 

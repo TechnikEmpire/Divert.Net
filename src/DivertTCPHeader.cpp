@@ -61,7 +61,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				System::Net::IPAddress::NetworkToHostOrder(m_tcpHeader->SrcPort);
+				return System::Net::IPAddress::NetworkToHostOrder((short)m_tcpHeader->SrcPort);
 			}
 
 			return 0;
@@ -78,8 +78,8 @@ namespace Divert
 		uint16_t TCPHeader::DestinationPort::get()
 		{
 			if (m_tcpHeader != nullptr)
-			{
-				System::Net::IPAddress::NetworkToHostOrder(m_tcpHeader->DstPort);
+			{				
+				return System::Net::IPAddress::NetworkToHostOrder((short)m_tcpHeader->DstPort);
 			}
 
 			return 0;
@@ -343,6 +343,11 @@ namespace Divert
 			{
 				m_tcpHeader->UrgPtr = value;
 			}
+		}
+
+		bool TCPHeader::Valid::get()
+		{
+			return UnmanagedHeader != nullptr;
 		}
 
 		PWINDIVERT_TCPHDR TCPHeader::UnmanagedHeader::get()

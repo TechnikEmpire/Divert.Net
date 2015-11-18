@@ -62,7 +62,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->SrcPort);
+				return System::Net::IPAddress::NetworkToHostOrder(static_cast<short>(m_udpHeader->SrcPort));
 			}
 
 			return 0;
@@ -80,7 +80,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->DstPort);
+				return System::Net::IPAddress::NetworkToHostOrder(static_cast<short>(m_udpHeader->DstPort));
 			}
 
 			return 0;
@@ -128,6 +128,11 @@ namespace Divert
 			{
 				m_udpHeader->Checksum = value;
 			}
+		}
+
+		bool UDPHeader::Valid::get()
+		{
+			return UnmanagedHeader != nullptr;
 		}
 
 		PWINDIVERT_UDPHDR UDPHeader::UnmanagedHeader::get()

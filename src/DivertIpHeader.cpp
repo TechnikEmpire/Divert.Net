@@ -279,7 +279,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				if (m_ipHeader->SrcAddr != m_lastSrcAddr)
+				if (m_ipHeader->SrcAddr != m_lastSrcAddr && ((m_ipHeader->SrcAddr > 0 && m_ipHeader->SrcAddr <= 0x00000000FFFFFFFF)))
 				{
 					m_sourceAddress = gcnew System::Net::IPAddress(m_ipHeader->SrcAddr);
 					m_lastSrcAddr = m_ipHeader->SrcAddr;
@@ -307,7 +307,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				if (m_ipHeader->DstAddr != m_lastDstAddr)
+				if (m_ipHeader->DstAddr != m_lastDstAddr && ((m_ipHeader->SrcAddr > 0 && m_ipHeader->SrcAddr <= 0x00000000FFFFFFFF)))
 				{
 					m_destinationAddress = gcnew System::Net::IPAddress(m_ipHeader->DstAddr);
 					m_lastDstAddr = m_ipHeader->DstAddr;
@@ -329,6 +329,11 @@ namespace Divert
 
 			m_destinationAddress = value;
 			m_lastDstAddr = intAddress;
+		}
+
+		bool IPHeader::Valid::get()
+		{
+			return UnmanagedHeader != nullptr;
 		}
 
 		PWINDIVERT_IPHDR IPHeader::UnmanagedHeader::get()

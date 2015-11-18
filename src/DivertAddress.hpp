@@ -34,7 +34,7 @@ namespace Divert
 		/// <summary>
 		/// Used to determine the direction of captured packets.
 		/// </summary>
-		public enum DivertDirection
+		public enum class DivertDirection
 		{
 			Outbound = 0,
 			Inbound = 1
@@ -118,13 +118,28 @@ namespace Divert
 				void set(PWINDIVERT_ADDRESS value);
 			}
 
+			/// <summary>
+			/// Resets the objects unmanaged internals. If the function returns true, then the
+			/// object has been reset to a valid state. If false, then an error occurred and the
+			/// object state is invalid.
+			/// </summary>
+			/// <returns>
+			/// True if the operation succeeded, false otherwise. 
+			/// </returns>
+			bool Reset();
+
 		private:
 
 			/// <summary>
 			/// Privately held PWINDIVERT_ADDRESS member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
-			PWINDIVERT_ADDRESS m_address;			
+			PWINDIVERT_ADDRESS m_address;	
+
+			/// <summary>
+			/// Some specialized initiation is required.
+			/// </summary>
+			void Init();
 
 		};
 

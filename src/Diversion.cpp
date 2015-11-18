@@ -155,22 +155,19 @@ namespace Divert
 				throw e;
 			}
 
-			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
-			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
-
-			unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-			if (pb == nullptr)
+			if (!address->Reset())
 			{
-				// This shouldn't ever happen, but TRUST NO 1
-				e = gcnew System::Exception(u8"In Diversion::Receive(array<System::Byte>^, Address^, out uint32_t) - Failed to pin packet buffer.");
+				e = gcnew System::Exception(u8"In Diversion::Receive(array<System::Byte>^, Address^, out uint32_t) - Failed to reset Address.");
 				throw e;
 			}
+
+			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
 			
 			uint32_t readLen = 0;
 
-			int result = WinDivertRecv(m_handle->UnmanagedHandle, pb, packetBuffer->Length, address->UnmanagedAddress, &readLen);
-
+			int result = WinDivertRecv(m_handle->UnmanagedHandle, byteArray, packetBuffer->Length, address->UnmanagedAddress, &readLen);
+			
 			receiveLength = readLen;
 
 			return result == 1;
@@ -183,6 +180,12 @@ namespace Divert
 			if (packetBuffer->Length == 0)
 			{
 				e = gcnew System::Exception(u8"In Diversion::ReceiveAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Supplied buffer has a length of zero. Not possible to read in to.");
+				throw e;
+			}
+
+			if (!address->Reset())
+			{
+				e = gcnew System::Exception(u8"In Diversion::ReceiveAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to reset Address.");
 				throw e;
 			}
 
@@ -429,7 +432,7 @@ namespace Divert
 			return result == 1;
 		}
 
-		bool Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader)
+		bool Diversion::ParsePacket(array<System::Byte>^ packetBuffer, uint32_t packetLength, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader)
 		{
 			// Ewww, code duplication. Oh well, this was the simplest way to provide the full functionality of the WinDivert parse packet function.
 
@@ -438,15 +441,6 @@ namespace Divert
 			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
 			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
 
-			unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-			if (pb == nullptr)
-			{
-				// This shouldn't ever happen, but TRUST NO 1
-				e = gcnew System::Exception(u8"In Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^, IPv6Header^, ICMPHeader^, ICMPv6Header^, TCPHeader^, UDPHeader^) - Failed to pin packet buffer.");
-				throw e;
-			}
-
 			PWINDIVERT_IPHDR umpipV4Header = nullptr;
 			PWINDIVERT_IPV6HDR umpipV6Header = nullptr;
 			PWINDIVERT_UDPHDR umpudpHeader = nullptr;
@@ -454,12 +448,9 @@ namespace Divert
 			PWINDIVERT_ICMPHDR umpicmpHeader = nullptr;
 			PWINDIVERT_ICMPV6HDR umpicmpV6Header = nullptr;
 
-			uint32_t packetDataLength = 0;
-			char* packetDataPointer = nullptr;
-
 			int retVal = 0;
 
-			retVal = WinDivertHelperParsePacket(pb, packetBuffer->Length, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
+			retVal = WinDivertHelperParsePacket(byteArray, packetLength, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, nullptr, nullptr);
 
 			if (ipHeader != nullptr && umpipV4Header != nullptr)
 			{
@@ -494,7 +485,7 @@ namespace Divert
 			return retVal == 1;
 		}
 
-		bool Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader, array<System::Byte>^% packetData)
+		bool Diversion::ParsePacket(array<System::Byte>^ packetBuffer, uint32_t packetLength, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader, array<System::Byte>^% packetData)
 		{
 			System::Exception^ e = nullptr;
 
@@ -522,7 +513,7 @@ namespace Divert
 
 			int retVal = 0;
 
-			retVal = WinDivertHelperParsePacket(pb, packetBuffer->Length, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
+			retVal = WinDivertHelperParsePacket(pb, packetLength, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
 
 			packetData = gcnew array<System::Byte>(packetDataLength);
 
@@ -531,32 +522,32 @@ namespace Divert
 				System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void*)packetDataPointer), packetData, 0, packetDataLength);
 			}	
 
-			if (ipHeader != nullptr && umpipV4Header != nullptr)
+			if (ipHeader != nullptr)
 			{
 				ipHeader->UnmanagedHeader = umpipV4Header;
 			}
 
-			if (ipv6Header != nullptr && umpipV6Header != nullptr)
+			if (ipv6Header != nullptr)
 			{
 				ipv6Header->UnmanagedHeader = umpipV6Header;
 			}
 
-			if (icmpHeader != nullptr && umpicmpHeader != nullptr)
+			if (icmpHeader != nullptr)
 			{
 				icmpHeader->UnmanagedHeader = umpicmpHeader;
 			}
 
-			if (icmpv6Header != nullptr && umpicmpV6Header != nullptr)
+			if (icmpv6Header != nullptr)
 			{
 				icmpv6Header->UnmanagedHeader = umpicmpV6Header;
 			}
 
-			if (tcpHeader != nullptr && umptcpHeader != nullptr)
+			if (tcpHeader != nullptr)
 			{
 				tcpHeader->UnmanagedHeader = umptcpHeader;
 			}
 
-			if (udpHeader != nullptr && umpudpHeader != nullptr)
+			if (udpHeader != nullptr)
 			{
 				udpHeader->UnmanagedHeader = umpudpHeader;
 			}

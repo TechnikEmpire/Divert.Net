@@ -86,6 +86,15 @@ namespace Divert
 				void set(uint32_t value);
 			}
 
+			/// <summary>
+			/// Check if the object is initialized with valid data. Use this flag to determine if
+			/// this header was populated by the ParsePacket method.
+			/// </summary>
+			property bool Valid
+			{
+				bool get();
+			}
+
 		internal:
 
 			/// <summary>

@@ -30,7 +30,7 @@ namespace Divert
 	{
 		Address::Address()
 		{
-			
+			Init();
 		}
 
 		Address::~Address()
@@ -42,8 +42,7 @@ namespace Divert
 		{
 			if (m_address != nullptr)
 			{
-				// This pointer is provided by WinDivert and is not ours to manage.
-				m_address = nullptr;
+				free(m_address);
 			}
 		}
 
@@ -118,6 +117,24 @@ namespace Divert
 		void Address::UnmanagedAddress::set(PWINDIVERT_ADDRESS value)
 		{
 			m_address = value;
+		}
+
+		bool Address::Reset()
+		{
+			if (m_address == nullptr)
+			{
+				Init();
+			}
+
+			// Reset the overlapped object
+			memset(m_address, 0, sizeof(*m_address));
+
+			return m_address != nullptr;
+		}
+
+		void Address::Init()
+		{
+			m_address = static_cast<PWINDIVERT_ADDRESS>(malloc(sizeof(WINDIVERT_ADDRESS)));
 		}
 
 	} /* namespace Net */

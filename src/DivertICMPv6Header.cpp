@@ -129,6 +129,11 @@ namespace Divert
 			}
 		}
 
+		bool ICMPv6Header::Valid::get()
+		{
+			return UnmanagedHeader != nullptr;
+		}
+
 		PWINDIVERT_ICMPV6HDR ICMPv6Header::UnmanagedHeader::get()
 		{
 			return m_icmpv6Header;

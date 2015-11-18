@@ -432,7 +432,7 @@ namespace Divert
 			/// FALSE may sometimes be a legitimate return value, e.g., when both ppIpHdr and
 			/// ppIpv6Hdr are non-NULL.
 			/// </returns>
-			bool ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader);
+			bool ParsePacket(array<System::Byte>^ packetBuffer, uint32_t packetLength, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader);
 
 			/// <summary>
 			/// Parses a raw packet (e.g. from WinDivertRecv()) into the various packet headers
@@ -472,7 +472,7 @@ namespace Divert
 			/// FALSE may sometimes be a legitimate return value, e.g., when both ppIpHdr and
 			/// ppIpv6Hdr are non-NULL.
 			/// </returns>
-			bool ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader, [System::Runtime::InteropServices::Out]array<System::Byte>^% packetData);
+			bool ParsePacket(array<System::Byte>^ packetBuffer, uint32_t packetLength, IPHeader^ ipHeader, IPv6Header^ ipv6Header, ICMPHeader^ icmpHeader, ICMPv6Header^ icmpv6Header, TCPHeader^ tcpHeader, UDPHeader^ udpHeader, [System::Runtime::InteropServices::Out]array<System::Byte>^% packetData);
 
 			/// <summary>
 			/// (Re)calculates the checksum for any IPv4/ICMP/ICMPv6/TCP/UDP checksum present in the

@@ -169,10 +169,10 @@ namespace Divert
 					)
 				{
 					array<System::Byte>^ ipArray = gcnew array<System::Byte>(4);
-					ipArray[0] = m_ipv6Header->SrcAddr[0];
-					ipArray[1] = m_ipv6Header->SrcAddr[1];
-					ipArray[2] = m_ipv6Header->SrcAddr[2];
-					ipArray[3] = m_ipv6Header->SrcAddr[3];
+					ipArray[0] = static_cast<int>(m_ipv6Header->SrcAddr[0]);
+					ipArray[1] = static_cast<int>(m_ipv6Header->SrcAddr[1]);
+					ipArray[2] = static_cast<int>(m_ipv6Header->SrcAddr[2]);
+					ipArray[3] = static_cast<int>(m_ipv6Header->SrcAddr[3]);
 
 					m_sourceAddress = gcnew System::Net::IPAddress(ipArray);
 
@@ -217,10 +217,10 @@ namespace Divert
 					)
 				{
 					array<System::Byte>^ ipArray = gcnew array<System::Byte>(4);
-					ipArray[0] = m_ipv6Header->DstAddr[0];
-					ipArray[1] = m_ipv6Header->DstAddr[1];
-					ipArray[2] = m_ipv6Header->DstAddr[2];
-					ipArray[3] = m_ipv6Header->DstAddr[3];
+					ipArray[0] = static_cast<int>(m_ipv6Header->DstAddr[0]);
+					ipArray[1] = static_cast<int>(m_ipv6Header->DstAddr[1]);
+					ipArray[2] = static_cast<int>(m_ipv6Header->DstAddr[2]);
+					ipArray[3] = static_cast<int>(m_ipv6Header->DstAddr[3]);
 
 					m_destinationAddress = gcnew System::Net::IPAddress(ipArray);
 
@@ -252,6 +252,11 @@ namespace Divert
 			}
 
 			m_destinationAddress = value;
+		}
+
+		bool IPv6Header::Valid::get()
+		{
+			return UnmanagedHeader != nullptr;
 		}
 
 		PWINDIVERT_IPV6HDR IPv6Header::UnmanagedHeader::get()
