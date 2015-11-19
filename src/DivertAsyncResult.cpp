@@ -31,7 +31,7 @@ namespace Divert
 
 		DivertAsyncResult::DivertAsyncResult()
 		{
-			
+			Init();
 		}
 
 		DivertAsyncResult::~DivertAsyncResult()
@@ -116,6 +116,7 @@ namespace Divert
 				case WAIT_TIMEOUT:
 					m_noError = false;
 					m_errorCode = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
+					break;
 				default:
 					m_noError = false;
 			}
@@ -136,6 +137,8 @@ namespace Divert
 					{
 						m_buffer.Free();
 					}
+
+					System::Console::WriteLine("1");
 
 					return false;
 				}
@@ -207,7 +210,7 @@ namespace Divert
 			// Reset the overlapped object
 			memset(m_overlapped, 0, sizeof(*m_overlapped));
 
-			m_noError = false;
+			m_noError = true;
 			m_errorCode = 0;
 			m_ioLength = 0;
 

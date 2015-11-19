@@ -30,7 +30,7 @@ namespace Divert
 	namespace Net
 	{
 
-		Diversion^ Diversion::Open(System::String^ filter, DivertLayer layer, uint16_t priority, FilterFlags^ flags)
+		Diversion^ Diversion::Open(System::String^ filter, DivertLayer layer, int16_t priority, FilterFlags flags)
 		{
 			// In case something goes wrong, we'll create this and throw it.
 			System::Exception^ e = nullptr;
@@ -52,7 +52,7 @@ namespace Divert
 				e = gcnew System::Exception(u8"In Diversion::Open(System::String^, DivertLayer, uint16_t, uint64_t) - Failed to marshal filter string.");
 				throw e;
 			}
-						
+
 			uint64_t flagsInt = (uint64_t)System::Convert::ChangeType(flags, System::UInt64::typeid);
 			
 			HANDLE divertHandle = WinDivertOpen(charString, (WINDIVERT_LAYER)layer, priority, flagsInt);
@@ -113,6 +113,74 @@ namespace Divert
 			System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)charString));
 
 			return diversion;
+		}
+
+		bool Diversion::ValidateFilter(System::String^ filter, DivertLayer layer, System::String^% errorDetails)
+		{
+			// In case something goes wrong, we'll create this and throw it.
+			System::Exception^ e = nullptr;
+
+			// Check if the string is null or empty. Empty filter strings are not supported, AFAIK.
+			if (System::String::IsNullOrEmpty(filter) || System::String::IsNullOrWhiteSpace(filter))
+			{
+				errorDetails = gcnew System::String(u8"In Diversion::ValidateFilter(System::String^, DivertLayer, System::String^%) - Supplied filter string is null, empty or whitespace.");
+				return false;
+			}
+
+			// Marshal the supplied string to a native C string for supplying to WinDivert
+			const char* charString = static_cast<const char*>((System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(filter)).ToPointer());
+
+			if (charString == nullptr)
+			{
+				e = gcnew System::Exception(u8"In Diversion::ValidateFilter(System::String^, DivertLayer, System::String^%) - Failed to marshal filter string.");
+				throw e;
+			}
+
+			const char* errStr = nullptr;
+			uint32_t errPos = 0;
+
+			int result = WinDivertHelperCheckFilter(charString, static_cast<WINDIVERT_LAYER>(layer), &errStr, &errPos);
+
+			// Free the marshalled filter string
+			System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)charString));
+
+			if (result == 0)
+			{
+				errorDetails = gcnew System::String(errStr);
+			}
+
+			return result == 1;
+		}
+
+		bool Diversion::EvaluateFilter(System::String^ filter, DivertLayer layer, array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address)
+		{
+			// In case something goes wrong, we'll create this and throw it.
+			System::Exception^ e = nullptr;
+
+			// Check if the string is null or empty. Empty filter strings are not supported, AFAIK.
+			if (System::String::IsNullOrEmpty(filter) || System::String::IsNullOrWhiteSpace(filter))
+			{
+				e = gcnew System::Exception(u8"In Diversion::EvaluateFilter(System::String^, DivertLayer, array<System::Byte>^, uint32_t, Address^) - Supplied filter string is null, empty or whitespace.");
+				throw e;
+			}
+
+			// Marshal the supplied string to a native C string for supplying to WinDivert
+			const char* charString = static_cast<const char*>((System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(filter)).ToPointer());
+
+			if (charString == nullptr)
+			{
+				e = gcnew System::Exception(u8"In Diversion::EvaluateFilter(System::String^, DivertLayer, array<System::Byte>^, uint32_t, Address^) - Failed to marshal filter string.");
+				throw e;
+			}
+
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
+
+			int result = WinDivertHelperEvalFilter(charString, static_cast<WINDIVERT_LAYER>(layer), byteArray, packetLength, address->UnmanagedAddress);
+
+			// Free the marshalled filter string
+			System::Runtime::InteropServices::Marshal::FreeHGlobal(System::IntPtr((void*)charString));
+
+			return result == 1;
 		}
 
 		Diversion::Diversion()
@@ -191,6 +259,8 @@ namespace Divert
 
 			uint32_t recvLength = 0;
 
+			pin_ptr<uint32_t> pinnedRecvLen = &receiveLength;
+
 			// If the user did not supply a valid DivertAsyncResult object, then the user does not care to wait for a pending
 			// result. In the Receive method, I can't imagine a scenario where this is useful. However, the parameter is
 			// optional. If the user has supplied a valid DivertAsyncResult object, then we need to pin the pointer of the 
@@ -201,18 +271,9 @@ namespace Divert
 				// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
 				pin_ptr<System::Byte> byteArray = &packetBuffer[0];
 
-				unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-				if (pb == nullptr)
-				{
-					// This shouldn't ever happen, but TRUST NO 1
-					e = gcnew System::Exception(u8"In Diversion::ReceiveAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to pin packet buffer.");
-					throw e;
-				}
-
 				//Attempt a read, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
-				if (!WinDivertRecvEx(m_handle->UnmanagedHandle, pb, packetBuffer->Length, 0, address->UnmanagedAddress, &recvLength, nullptr))
+				if (!WinDivertRecvEx(m_handle->UnmanagedHandle, byteArray, packetBuffer->Length, 0, address->UnmanagedAddress, pinnedRecvLen, nullptr))
 				{
 					return false;
 				}
@@ -269,7 +330,7 @@ namespace Divert
 			return false;
 		}
 
-		bool Diversion::Send(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength)
+		bool Diversion::Send(array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address, uint32_t% sendLength)
 		{
 			System::Exception^ e = nullptr;
 
@@ -282,25 +343,16 @@ namespace Divert
 			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
 			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
 
-			unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-			if (pb == nullptr)
-			{
-				// This shouldn't ever happen, but TRUST NO 1
-				e = gcnew System::Exception(u8"In Diversion::Send(array<System::Byte>^, Address^, out uint32_t) - Failed to pin packet buffer.");
-				throw e;
-			}
-
 			uint32_t sendLen = 0;
 
-			int result = WinDivertSend(m_handle->UnmanagedHandle, pb, packetBuffer->Length, address->UnmanagedAddress, &sendLen);
+			int result = WinDivertSend(m_handle->UnmanagedHandle, byteArray, packetLength, address->UnmanagedAddress, &sendLen);
 
 			sendLength = sendLen;
 
 			return result == 1;
 		}
 
-		bool Diversion::SendAsync(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult)
+		bool Diversion::SendAsync(array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address, uint32_t% sendLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult)
 		{
 			System::Exception^ e = nullptr;
 
@@ -319,20 +371,11 @@ namespace Divert
 			if (asyncResult == nullptr)
 			{
 				// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
-				pin_ptr<System::Byte> byteArray = &packetBuffer[0];
-
-				unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-				if (pb == nullptr)
-				{
-					// This shouldn't ever happen, but TRUST NO 1
-					e = gcnew System::Exception(u8"In Diversion::SendAsync(array<System::Byte>^, Address^, uint32_t%, DivertAsyncResult^) - Failed to pin packet buffer.");
-					throw e;
-				}
+				pin_ptr<System::Byte> byteArray = &packetBuffer[0];				
 
 				// Attempt a Send, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
-				if (!WinDivertSendEx(m_handle->UnmanagedHandle, pb, packetBuffer->Length, 0, address->UnmanagedAddress, &sendLen, nullptr))
+				if (!WinDivertSendEx(m_handle->UnmanagedHandle, byteArray, packetLength, 0, address->UnmanagedAddress, &sendLen, nullptr))
 				{
 					return false;
 				}
@@ -378,6 +421,7 @@ namespace Divert
 						asyncResult->ErrorCode = lastError;
 						asyncResult->NoError = false;
 					}
+
 					return false;
 				}
 
@@ -490,16 +534,7 @@ namespace Divert
 			System::Exception^ e = nullptr;
 
 			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
-			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
-
-			unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-			if (pb == nullptr)
-			{
-				// This shouldn't ever happen, but TRUST NO 1
-				e = gcnew System::Exception(u8"In Diversion::ParsePacket(array<System::Byte>^ packetBuffer, IPHeader^, IPv6Header^, ICMPHeader^, ICMPv6Header^, TCPHeader^, UDPHeader^, array<System::Byte>^%) - Failed to pin packet buffer.");
-				throw e;
-			}			
+			pin_ptr<System::Byte> byteArray = &packetBuffer[0];			
 
 			PWINDIVERT_IPHDR umpipV4Header = nullptr;
 			PWINDIVERT_IPV6HDR umpipV6Header = nullptr;
@@ -513,7 +548,7 @@ namespace Divert
 
 			int retVal = 0;
 
-			retVal = WinDivertHelperParsePacket(pb, packetLength, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
+			retVal = WinDivertHelperParsePacket(byteArray, packetLength, &umpipV4Header, &umpipV6Header, &umpicmpHeader, &umpicmpV6Header, &umptcpHeader, &umpudpHeader, (PVOID*)(&packetDataPointer), &packetDataLength);
 
 			packetData = gcnew array<System::Byte>(packetDataLength);
 
@@ -555,25 +590,16 @@ namespace Divert
 			return retVal == 1;
 		}
 
-		uint32_t Diversion::CalculateChecksums(array<System::Byte>^ packetBuffer, ChecksumCalculationFlags flags)
+		uint32_t Diversion::CalculateChecksums(array<System::Byte>^ packetBuffer, uint32_t packetLength, ChecksumCalculationFlags flags)
 		{
 			System::Exception^ e = nullptr;
 
 			// Pin the array to ensure the GC leaves the object alone with the unmanaged code uses it
 			pin_ptr<System::Byte> byteArray = &packetBuffer[0];
 
-			unsigned char* pb = static_cast<unsigned char*>(byteArray);
-
-			if (pb == nullptr)
-			{
-				// This shouldn't ever happen, but TRUST NO 1
-				e = gcnew System::Exception(u8"In Diversion::CalculateChecksums(array<System::Byte>^, ChecksumCalculationFlags) - Failed to pin packet buffer.");
-				throw e;
-			}
-
 			uint64_t flagsInt = (uint64_t)System::Convert::ChangeType(flags, System::UInt64::typeid);
 
-			int retVal = WinDivertHelperCalcChecksums(pb, packetBuffer->Length, flagsInt);
+			int retVal = WinDivertHelperCalcChecksums(byteArray, packetLength, flagsInt);
 
 			return retVal == 1;
 		}

@@ -55,8 +55,7 @@ namespace Divert
 		/// Flag summaries copied from:
 		/// https://reqrypt.org/windivert-doc.html#divert_helper_parse_packet
 		/// </summary>
-		[System::Flags]
-		public enum class FilterFlags : uint64_t
+		public enum class FilterFlags : System::UInt64
 		{
 			/// <summary>
 			/// By default WinDivert ensures that each diverted packet has a valid checksum. If the
@@ -87,8 +86,7 @@ namespace Divert
 		/// Flag summaries copied from:
 		/// https://reqrypt.org/windivert-doc.html#divert_helper_calc_checksums
 		/// </summary>
-		[System::Flags]
-		public enum class ChecksumCalculationFlags : uint64_t
+		public enum class ChecksumCalculationFlags : System::UInt64
 		{
 			/// <summary>
 			/// Do not calculate the IPv4 checksum.
@@ -180,7 +178,49 @@ namespace Divert
 			/// If the operation succeeds, a valid Diversion instance with an open handle. If the
 			/// operation fails, this function will throw, so nothing will be returned.
 			/// </returns>
-			static Diversion^ Open(System::String^ filter, DivertLayer layer, uint16_t priority, FilterFlags^ flags);
+			static Diversion^ Open(System::String^ filter, DivertLayer layer, int16_t priority, FilterFlags flags);
+
+			/// <summary>
+			/// Checks the given filter string to ensure its format is correct and does not contain
+			/// any invalid data.
+			/// </summary>
+			/// <param name="filter">
+			/// The filter string to check. 
+			/// </param>
+			/// <param name="layer">
+			/// Layer information. 
+			/// </param>
+			/// <param name="errorDetails">
+			/// If the return value is false, an error string detailing the problem.
+			/// </param>
+			/// <returns>
+			/// True if the supplied filter string is valid, false otherwise. 
+			/// </returns>
+			static bool ValidateFilter(System::String^ filter, DivertLayer layer, System::String^% errorDetails);
+
+			/// <summary>
+			/// Evaluates a filter against a given packet and its corresponding data to see if the
+			/// filter applies.
+			/// </summary>
+			/// <param name="filter">
+			/// The filter string to check. 
+			/// </param>
+			/// <param name="layer">
+			/// The layer information for the supplied packet. 
+			/// </param>
+			/// <param name="packetBuffer">
+			/// The packet data to check the filter against. 
+			/// </param>
+			/// <param name="packetLength">
+			/// The length of valid packet data inside the supplied buffer. 
+			/// </param>
+			/// <param name="address">
+			/// The address information for the supplied packet. 
+			/// </param>
+			/// <returns>
+			/// True if the filter applies, false otherwise. 
+			/// </returns>
+			static bool EvaluateFilter(System::String^ filter, DivertLayer layer, array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address);
 
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
@@ -286,6 +326,9 @@ namespace Divert
 			/// <param name="packetBuffer">
 			/// A valid array allocated with a length greater than zero. 
 			/// </param>
+			/// <param name="packetLength">
+			/// The length of valid data in the buffer.
+			/// </param>
 			/// <param name="address">
 			/// A Address instance. The Address instance will hold information about the origin and
 			/// direction of the intercepted packet.
@@ -297,7 +340,7 @@ namespace Divert
 			/// <returns>
 			/// True if the supplied packet was successfully injected, false otherwise.
 			/// </returns>
-			bool Send(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength);
+			bool Send(array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address, uint32_t% sendLength);
 
 			/// <summary>
 			/// Injects a packet into the network stack. The injected packet may be one received
@@ -327,6 +370,9 @@ namespace Divert
 			/// <param name="packetBuffer">
 			/// A valid array allocated with a length greater than zero. 
 			/// </param>
+			/// <param name="packetLength">
+			/// The length of valid data in the buffer.
+			/// </param>
 			/// <param name="address">
 			/// A Address instance. The Address instance will hold information about the origin and
 			/// direction of the intercepted packet.
@@ -348,7 +394,7 @@ namespace Divert
 			/// </param>
 			/// <returns>
 			/// </returns>
-			bool SendAsync(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% sendLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult);
+			bool SendAsync(array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address, uint32_t% sendLength, [System::Runtime::InteropServices::Optional]DivertAsyncResult^ asyncResult);
 
 			/// <summary>
 			/// Close the handle. This can be called explicitly by the user or, if the user disposes
@@ -446,6 +492,9 @@ namespace Divert
 			/// A valid array populated with packet data from a previously successful call to one of
 			/// the Receive methods.
 			/// </param>
+			/// <param name="packetLength">
+			/// The length of valid data in the buffer.
+			/// </param>
 			/// <param name="ipHeader">
 			/// The IPHeader object to populate. Optional, pass null if not desired.
 			/// </param>
@@ -484,6 +533,9 @@ namespace Divert
 			/// <param name="packetBuffer">
 			/// An array containing the packet data to calculate the checksums for. 
 			/// </param>
+			/// <param name="packetLength">
+			/// The length of valid data in the buffer.
+			/// </param>
 			/// <param name="flags">
 			/// Checksum calculation flags. Adjust which headers have the checksums calculated for
 			/// with these flags.
@@ -491,7 +543,7 @@ namespace Divert
 			/// <returns>
 			/// The number of checksums calculated.
 			/// </returns>
-			uint32_t CalculateChecksums(array<System::Byte>^ packetBuffer, ChecksumCalculationFlags flags);
+			uint32_t CalculateChecksums(array<System::Byte>^ packetBuffer, uint32_t packetLength, ChecksumCalculationFlags flags);
 
 		private:
 

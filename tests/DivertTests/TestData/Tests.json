@@ -1,0 +1,449 @@
+﻿{
+   "Tests":[
+   { "TestName":"Test1",
+      "TestFilter":"outbound and icmp",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test2",
+      "TestFilter":"outbound",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test3",
+      "TestFilter":"outbound and inbound",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test4",
+      "TestFilter":"icmp",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test5",
+      "TestFilter":"not icmp",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test6",
+      "TestFilter":"ip or ipv6",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test7",
+      "TestFilter":"inbound",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test8",
+      "TestFilter":"tcp",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test9",
+      "TestFilter":"icmp.Type == 8",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test10",
+      "TestFilter":"icmp.Type == 9",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test11",
+      "TestFilter":"(tcp? ip.Checksum == 0: icmp)",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test12",
+      "TestFilter":"(udp? icmp: icmp.Body == 5555)",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test13",
+      "TestFilter":"(false? false: false)",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test14",
+      "TestFilter":"(true? true: true)",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test15",
+      "TestFilter":"(tcp or udp or icmpv6 or ipv6? true: false)",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test16",
+      "TestFilter":"(ip and ipv6 and tcp and udp? false: icmp > 0)",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test17",
+      "TestFilter":"(tcp? tcp.DstPort == 80: true) and (udp? udp.DstPort == 80: true)",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test18",
+      "TestFilter":"ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip and ip",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test19",
+      "TestFilter":"not true or false or not icmp or icmp.Body == 33 or icmp.Checksum==2 or icmp.Code == 0x777 or icmp.Type == 0x333 or icmpv6 or icmpv6.Body or icmpv6.Checksum or icmpv6.Code or icmpv6.Type or ifIdx == 93923 or inbound or not ip or ip.Checksum == 8 or not ip.DF or ip.DstAddr == 1.2.3.4 or ip.FragOff == 4212 or ip.HdrLength == 2 or ip.Id = 0x0987 or ip.Length == 788 or ip.MF == 1 or ip.Protocol == 999 or ip.SrcAddr == 9.8.7.255 or ip.TOS == 3 or ip.TTL = 221 or ipv6 or ipv6.DstAddr or ipv6.FlowLabel or ipv6.HopLimit or ipv6.Length or ipv6.NextHdr or ipv6.SrcAddr or ipv6.TrafficClass or not outbound or subIfIdx == 888 or tcp or tcp.Ack or tcp.AckNum or tcp.Checksum or tcp.DstPort or tcp.Fin or tcp.HdrLength or tcp.PayloadLength or tcp.Psh or tcp.Rst or tcp.SeqNum or tcp.SrcPort or tcp.Syn or tcp.Urg or tcp.UrgPtr or tcp.Window or udp or udp.Checksum or udp.DstPort or udp.Length or udp.PayloadLength or udp.SrcPort",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test20",
+      "TestFilter":"(true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (true and (((((((((((((((icmp)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test21",
+      "TestFilter":"not not not not not not not not icmp",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test22",
+      "TestFilter":"not not not not not not not icmp",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test23",
+      "TestFilter":"!!!!!!!icmp",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test24",
+      "TestFilter":"false and true or true",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test25",
+      "TestFilter":"true and false or false",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test26",
+      "TestFilter":"true or true and false",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test27",
+      "TestFilter":"false or false and true",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test28",
+      "TestFilter":"tcp && icmp || ip",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test29",
+      "TestFilter":"icmp && udp || tcp",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test30",
+      "TestFilter":"ip || icmp && icmpv6",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test31",
+      "TestFilter":"!ip || !icmp && !udp",
+      "TestData":"&pkt_echo_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test32",
+      "TestFilter":"(((icmp)? (true): (false)) and (((tcp)? (false): (true)) and ((ipv6)? (false): (true))))",
+      "TestData":"&pkt_echo_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test33",
+      "TestFilter":"tcp",
+      "TestData":"&pkt_http_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test34",
+      "TestFilter":"outbound and tcp and tcp.DstPort == 80",
+      "TestData":"&pkt_http_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test35",
+      "TestFilter":"outbound and tcp and tcp.DstPort == 81",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test36",
+      "TestFilter":"outbound and tcp and tcp.DstPort != 80",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test37",
+      "TestFilter":"inbound and tcp and tcp.DstPort == 80",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test38",
+      "TestFilter":"tcp.PayloadLength == 469",
+      "TestData":"&pkt_http_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test39",
+      "TestFilter":"tcp.PayloadLength != 469",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test40",
+      "TestFilter":"tcp.PayloadLength >= 469",
+      "TestData":"&pkt_http_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test41",
+      "TestFilter":"tcp.PayloadLength <= 469",
+      "TestData":"&pkt_http_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test42",
+      "TestFilter":"tcp.PayloadLength > 469",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test43",
+      "TestFilter":"tcp.PayloadLength < 469",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test44",
+      "TestFilter":"(outbound? (ip? (tcp.DstPort == 80? (tcp.PayloadLength > 0? true: false): false): false): false)",
+      "TestData":"&pkt_http_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test45",
+      "TestFilter":"(outbound? (ip? (tcp.DstPort == 80? (tcp.PayloadLength == 0? true: false): false): false): false)",
+      "TestData":"&pkt_http_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test46",
+      "TestFilter":"udp",
+      "TestData":"&pkt_dns_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test47",
+      "TestFilter":"udp && udp.SrcPort > 1 && ipv6",
+      "TestData":"&pkt_dns_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test48",
+      "TestFilter":"udp.DstPort == 53",
+      "TestData":"&pkt_dns_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test49",
+      "TestFilter":"udp.DstPort > 100",
+      "TestData":"&pkt_dns_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test50",
+      "TestFilter":"ip.DstAddr = 8.8.4.4",
+      "TestData":"&pkt_dns_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test51",
+      "TestFilter":"ip.DstAddr = 8.8.8.8",
+      "TestData":"&pkt_dns_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test52",
+      "TestFilter":"ip.DstAddr >= 8.8.0.0 &&ip.DstAddr <= 8.8.255.255",
+      "TestData":"&pkt_dns_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test53",
+      "TestFilter":"ip.SrcAddr >= 10.0.0.0 && ip.SrcAddr <= 10.255.255.255",
+      "TestData":"&pkt_dns_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test54",
+      "TestFilter":"ip.SrcAddr < 10.0.0.0 or ip.SrcAddr > 10.255.255.255",
+      "TestData":"&pkt_dns_request",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test55",
+      "TestFilter":"udp.PayloadLength == 29",
+      "TestData":"&pkt_dns_request",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test56",
+      "TestFilter":"ipv6",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test57",
+      "TestFilter":"ip",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test58",
+      "TestFilter":"tcp.Syn",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test59",
+      "TestFilter":"tcp.Syn == 1 && tcp.Ack == 0",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test60",
+      "TestFilter":"tcp.Rst or tcp.Fin",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test61",
+      "TestFilter":"(tcp.Syn? !tcp.Rst && !tcp.Fin: true)",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test62",
+      "TestFilter":"(tcp.Rst? !tcp.Syn: (tcp.Fin? !tcp.Syn: tcp.Syn))",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test63",
+      "TestFilter":"tcp.PayloadLength == 0",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test64",
+      "TestFilter":"ipv6.SrcAddr == 1234:5678:1::aabb:ccdd",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test65",
+      "TestFilter":"ipv6.SrcAddr == aabb:5678:1::1234:ccdd",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test66",
+      "TestFilter":"tcp.SrcPort == 50046",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test67",
+      "TestFilter":"tcp.SrcPort == 0x0000C37E",
+      "TestData":"&pkt_ipv6_tcp_syn",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test68",
+      "TestFilter":"icmpv6",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test69",
+      "TestFilter":"icmp",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test70",
+      "TestFilter":"icmp or icmpv6",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test71",
+      "TestFilter":"not icmp",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test72",
+      "TestFilter":"icmpv6.Type == 129",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test73",
+      "TestFilter":"icmpv6.Code == 0",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test74",
+      "TestFilter":"icmpv6.Body == 0x10720003",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test75",
+      "TestFilter":"ipv6.DstAddr >= 1000",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test76",
+      "TestFilter":"ipv6.DstAddr <= 1",
+      "TestData":"&pkt_ipv6_echo_reply",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test77",
+      "TestFilter":"true",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test78",
+      "TestFilter":"udp",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test79",
+      "TestFilter":"tcp",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test80",
+      "TestFilter":"ipv6.SrcAddr == ::1",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test81",
+      "TestFilter":"ipv6.SrcAddr == ::2",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test82",
+      "TestFilter":"ipv6.SrcAddr < abcd::1",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test83",
+      "TestFilter":"ipv6.SrcAddr <= abcd::1",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test84",
+      "TestFilter":"ipv6.SrcAddr != abcd::1",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test85",
+      "TestFilter":"ipv6.SrcAddr >= abcd::1",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test86",
+      "TestFilter":"ipv6.SrcAddr > abcd::1",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test87",
+      "TestFilter":"udp.SrcPort == 4660 and udp.DstPort == 43690",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   },
+   { "TestName":"Test88",
+      "TestFilter":"udp.SrcPort == 4660 and udp.DstPort == 12345",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" FALSE"
+   },
+   { "TestName":"Test89",
+      "TestFilter":"(outbound and tcp? tcp.DstPort == 0xABAB: false) or (outbound and udp? udp.DstPort == 0xAAAA: false) or (inbound and tcp? tcp.SrcPort == 0xABAB: false) or (inbound and udp? udp.SrcPort == 0xAAAA: false)",
+      "TestData":"&pkt_ipv6_exthdrs_udp",
+      "Match":" TRUE"
+   }
+   ]
+}

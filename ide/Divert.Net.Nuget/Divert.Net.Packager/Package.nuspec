@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Divert.Net</id>
+    <version>1.0.0</version>
+    <title>Divert.Net</title>
+    <authors>Furinax</authors>
+    <owners></owners>
+    <description>
+      Divert.NET is a managed wrapper for the powerful WinDivert library, a user-mode packet capture-and-divert engine. WinDivert allows user-mode applications to capture/modify/drop network packets sent to/from the Windows network stack. In summary, WinDivert can:
+
+      Capture network packets
+      Filter/drop network packets
+      Sniff network packets
+      (re)Inject network packets
+      Modify network packets
+      
+      WinDivert can be used to implement user-mode packet filters, packet sniffers, firewalls, NAT, VPNs, tunneling applications, etc. WinDivert is licensed un the LGPLv3 and Divert.NET is licensed under the MIT License.
+    </description>
+    <releaseNotes>
+    </releaseNotes>
+    <summary>
+      Divert.NET is a managed wrapper for the powerful WinDivert library, a user-mode packet capture-and-divert engine. With WinDivert, user-mode applications can easily capture, modify and drop network traffic.
+    </summary>
+    <language>en-US</language>
+    <projectUrl>https://github.com/TechnikEmpire/Divert.Net</projectUrl>
+    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+    <requireLicenseAcceptance>True</requireLicenseAcceptance>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <copyright>Copyright (c) 2015 Jesse Nicholson</copyright>
+    <dependencies>
+        <group targetFramework="net40">
+          <dependency id="log4net" version="1.2.10" />
+        </group>
+    </dependencies>
+    <references></references>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="lib\" target="lib" />
+    <file src="tools\" target="tools" />
+    <file src="content\" target="content" />
+  </files>
+</package>
