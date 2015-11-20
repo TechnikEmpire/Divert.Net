@@ -4,7 +4,7 @@
 
 ##Goals
 
- - Wrap WinDivert in a fully managed, easy to use CLR library.
+ - Wrap WinDivert in a managed, easy to use CLR library.
  - Provide helpful extensions for commonly desired tasks, such as the ability to identify the process behind a packet flow.
  - Win?
 
