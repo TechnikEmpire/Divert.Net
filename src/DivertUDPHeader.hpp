@@ -24,8 +24,15 @@
 
 #pragma once
 
-#include <windivert.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <cstdint>
+#include <string>
+#include <iphlpapi.h>
+#include <timeapi.h>
+#include <udpmib.h>
+#include <psapi.h>
+#include <windivert.h>
 
 namespace Divert
 {
@@ -145,12 +152,55 @@ namespace Divert
 				void set(PWINDIVERT_UDPHDR value);
 			}
 
+			/// <summary>
+			/// Internal accessor to the unmanaged PMIB_UDPTABLE_OWNER_PID object held by this object. The
+			/// purpose of the PMIB_UDPTABLE_OWNER_PID object is to allow the user to easily get the
+			/// information about the process behind behind a TCP packet flow. Static helper
+			/// functions are made available in the Diversion class where the user can query this
+			/// type of information by supplying DivertTCPHeader or DivertUDPHeader along with the
+			/// appropriate IP header.
+			/// 
+			/// This object will handle freeing the data this member points to.
+			/// </summary>
+			/// <returns>
+			/// The unmanaged PMIB_UDPTABLE_OWNER_PID member. 
+			/// </returns>
+			property PMIB_UDPTABLE_OWNER_PID UnmanagedUdpV4Table
+			{
+				PMIB_UDPTABLE_OWNER_PID get();
+				void set(PMIB_UDPTABLE_OWNER_PID value);
+			}
+
+			/// <summary>
+			/// Internal accessor to the unmanaged PMIB_UDP6TABLE_OWNER_PID object held by this object. The
+			/// purpose of the PMIB_UDP6TABLE_OWNER_PID object is to allow the user to easily get the
+			/// information about the process behind behind a TCP packet flow. Static helper
+			/// functions are made available in the Diversion class where the user can query this
+			/// type of information by supplying DivertTCPHeader or DivertUDPHeader along with the
+			/// appropriate IP header.
+			/// 
+			/// This object will handle freeing the data this member points to.
+			/// </summary>
+			/// <returns>
+			/// The unmanaged PMIB_UDP6TABLE_OWNER_PID member. 
+			/// </returns>
+			property PMIB_UDP6TABLE_OWNER_PID UnmanagedUdpV6Table
+			{
+				PMIB_UDP6TABLE_OWNER_PID get();
+				void set(PMIB_UDP6TABLE_OWNER_PID value);
+			}
+
 		private:
 
+			/// <summary>
 			/// Privately held PWINDIVERT_UDPHDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
 			PWINDIVERT_UDPHDR m_udpHeader = nullptr;
+
+			PMIB_UDPTABLE_OWNER_PID m_udpv4Table;
+
+			PMIB_UDP6TABLE_OWNER_PID m_udpv6Table;
 
 		};
 

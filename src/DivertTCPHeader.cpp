@@ -46,6 +46,18 @@ namespace Divert
 				// This pointer is provided by WinDivert and is not ours to manage.
 				m_tcpHeader = nullptr;
 			}
+
+			if (m_tcpv4Table != nullptr)
+			{
+				// This object is exclusively owned by this object and therefore needs to be freed here.
+				free(m_tcpv4Table);
+			}
+
+			if (m_tcpv6Table != nullptr)
+			{
+				// This object is exclusively owned by this object and therefore needs to be freed here.
+				free(m_tcpv6Table);
+			}
 		}
 
 		TCPHeader::TCPHeader(PWINDIVERT_TCPHDR tcpHeader)
@@ -358,6 +370,26 @@ namespace Divert
 		void TCPHeader::UnmanagedHeader::set(PWINDIVERT_TCPHDR value)
 		{
 			m_tcpHeader = value;
+		}
+
+		PMIB_TCPTABLE2 TCPHeader::UnmanagedTcpV4Table::get()
+		{
+			return m_tcpv4Table;
+		}
+
+		void TCPHeader::UnmanagedTcpV4Table::set(PMIB_TCPTABLE2 value)
+		{
+			m_tcpv4Table = value;
+		}
+
+		PMIB_TCP6TABLE2 TCPHeader::UnmanagedTcpV6Table::get()
+		{
+			return m_tcpv6Table;
+		}
+
+		void TCPHeader::UnmanagedTcpV6Table::set(PMIB_TCP6TABLE2 value)
+		{
+			m_tcpv6Table = value;
 		}
 
 	} /* namespace Net */

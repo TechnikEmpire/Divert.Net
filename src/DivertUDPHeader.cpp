@@ -46,6 +46,18 @@ namespace Divert
 				// This pointer is provided by WinDivert and is not ours to manage.
 				m_udpHeader = nullptr;
 			}
+
+			if (m_udpv4Table != nullptr)
+			{
+				// This object is exclusively owned by this object and therefore needs to be freed here.
+				free(m_udpv4Table);
+			}
+
+			if (m_udpv6Table != nullptr)
+			{
+				// This object is exclusively owned by this object and therefore needs to be freed here.
+				free(m_udpv6Table);
+			}
 		}
 
 		UDPHeader::UDPHeader(PWINDIVERT_UDPHDR udpHeader)
@@ -143,6 +155,26 @@ namespace Divert
 		void UDPHeader::UnmanagedHeader::set(PWINDIVERT_UDPHDR value)
 		{
 			m_udpHeader = value;
+		}
+
+		PMIB_UDPTABLE_OWNER_PID UDPHeader::UnmanagedUdpV4Table::get()
+		{
+			return m_udpv4Table;
+		}
+
+		void UDPHeader::UnmanagedUdpV4Table::set(PMIB_UDPTABLE_OWNER_PID value)
+		{
+			m_udpv4Table = value;
+		}
+
+		PMIB_UDP6TABLE_OWNER_PID UDPHeader::UnmanagedUdpV6Table::get()
+		{
+			return m_udpv6Table;
+		}
+
+		void UDPHeader::UnmanagedUdpV6Table::set(PMIB_UDP6TABLE_OWNER_PID value)
+		{
+			m_udpv6Table = value;
 		}
 
 	} /* namespace Net */

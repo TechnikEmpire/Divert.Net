@@ -119,6 +119,7 @@ namespace Divert
 
 		private:
 
+			/// <summary>
 			/// Privately held PWINDIVERT_ICMPV6HDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>

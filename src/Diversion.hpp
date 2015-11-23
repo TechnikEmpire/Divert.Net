@@ -222,6 +222,14 @@ namespace Divert
 			/// </returns>
 			static bool EvaluateFilter(System::String^ filter, DivertLayer layer, array<System::Byte>^ packetBuffer, uint32_t packetLength, Address^ address);
 
+			static void GetPacketProcess(Address^ address, TCPHeader^ tcpHeader, IPHeader^ ipv4Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName);
+
+			static void GetPacketProcess(Address^ address, TCPHeader^ tcpHeader, IPv6Header^ ipv6Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName);
+
+			static void GetPacketProcess(Address^ address, UDPHeader^ udpHeader, IPHeader^ ipv4Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName);
+
+			static void GetPacketProcess(Address^ address, UDPHeader^ udpHeader, IPv6Header^ ipv6Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName);
+
 			/// <summary>
 			/// Destructor, invokes finalizer as per docs here
 			/// https://msdn.microsoft.com/library/ms177197(v=vs.100).aspx.
@@ -547,11 +555,38 @@ namespace Divert
 
 		private:
 
+			/// <summary>
+			/// Default constructor is private because instances must be created through the
+			/// provided static interface.
+			/// </summary>
 			Diversion();
 
+			/// <summary>
+			/// Allow construction from an existing handle.
+			/// </summary>
+			/// <param name="handle">
+			/// A valid WinDivert handle.
+			/// </param>
 			Diversion(DivertHandle^ handle);
 
-			DivertHandle^ m_handle;
+			/// <summary>
+			/// A reference to the WinDivert handle that this diversion object was successfully
+			/// created with.
+			/// </summary>
+			DivertHandle^ m_winDivertHandle;
+
+			/// <summary>
+			/// Utility for getting the full path to the binary including the binary name for the
+			/// supplied process ID.
+			/// </summary>
+			/// <param name="processId">
+			/// A valid process ID (Must not be equal to 0 or 4, as these values imply SYSTEM). 
+			/// </param>
+			/// <returns>
+			/// If a valid PID was supplied, the full path to the binary including the binary name.
+			/// If an invalid PID was supplied, an empty string.
+			/// </returns>
+			static std::string GetProcessName(const ULONG processId);
 
 		};
 

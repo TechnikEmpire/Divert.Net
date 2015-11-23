@@ -24,8 +24,15 @@
 
 #pragma once
 
-#include <windivert.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <cstdint>
+#include <string>
+#include <iphlpapi.h>
+#include <timeapi.h>
+#include <tcpmib.h>
+#include <psapi.h>
+#include <windivert.h>
 
 namespace Divert
 {
@@ -209,13 +216,63 @@ namespace Divert
 				void set(PWINDIVERT_TCPHDR value);
 			}
 
+			/// <summary>
+			/// Internal accessor to the unmanaged PMIB_TCPTABLE2 object held by this object. The
+			/// purpose of the PMIB_TCPTABLE2 object is to allow the user to easily get the
+			/// information about the process behind behind a TCP packet flow. Static helper
+			/// functions are made available in the Diversion class where the user can query this
+			/// type of information by supplying DivertTCPHeader or DivertUDPHeader along with the
+			/// appropriate IP header.
+			/// 
+			/// This object will handle freeing the data this member points to.
+			/// </summary>
+			/// <returns>
+			/// The unmanaged PMIB_TCPTABLE2 member. 
+			/// </returns>
+			property PMIB_TCPTABLE2 UnmanagedTcpV4Table
+			{
+				PMIB_TCPTABLE2 get();
+				void set(PMIB_TCPTABLE2 value);
+			}
+
+			/// <summary>
+			/// Internal accessor to the unmanaged PMIB_TCP6TABLE2 object held by this object. The
+			/// purpose of the PMIB_TCPTABLE2 object is to allow the user to easily get the
+			/// information about the process behind behind a TCP packet flow. Static helper
+			/// functions are made available in the Diversion class where the user can query this
+			/// type of information by supplying DivertTCPHeader or DivertUDPHeader along with the
+			/// appropriate IP header.
+			/// 
+			/// This object will handle freeing the data this member points to.
+			/// </summary>
+			/// <returns>
+			/// The unmanaged PMIB_TCP6TABLE2 member. 
+			/// </returns>
+			property PMIB_TCP6TABLE2 UnmanagedTcpV6Table
+			{
+				PMIB_TCP6TABLE2 get();
+				void set(PMIB_TCP6TABLE2 value);
+			}
+
 		private:
 
+			/// <summary>
 			/// Privately held PWINDIVERT_TCPHDR member. Exposed internally only so that other
 			/// members of the library can access it, but it's kept away from the user.
 			/// </summary>
 			PWINDIVERT_TCPHDR m_tcpHeader = nullptr;
+			
+			/// <summary>
+			/// Privately held PWINDIVERT_TCPHDR member. Exposed internally only so that other
+			/// members of the library can access it, but it's kept away from the user.
+			/// </summary>
+			PMIB_TCPTABLE2 m_tcpv4Table = nullptr;
 
+			/// <summary>
+			/// Privately held PWINDIVERT_TCPHDR member. Exposed internally only so that other
+			/// members of the library can access it, but it's kept away from the user.
+			/// </summary>
+			PMIB_TCP6TABLE2 m_tcpv6Table = nullptr;
 		};
 
 	} /* namespace Net */

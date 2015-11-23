@@ -183,6 +183,407 @@ namespace Divert
 			return result == 1;
 		}
 
+		void Diversion::GetPacketProcess(Address^ address, TCPHeader^ tcpHeader, IPHeader^ ipv4Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName)
+		{
+			// In case something goes wrong, we'll create this and throw it.
+			System::Exception^ e = nullptr;
+
+			ULONG currentTableSize = 0;
+
+			// First, if the table has never been initialized, it needs to be.
+			if (tcpHeader->UnmanagedTcpV4Table == nullptr)
+			{
+				currentTableSize = sizeof(PMIB_TCPTABLE2);
+				tcpHeader->UnmanagedTcpV4Table = static_cast<PMIB_TCPTABLE2>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (tcpHeader->UnmanagedTcpV4Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(TCPHeader^, IPHeader^, uint64_t%, System::String^) - Failed to allocate TCPTABLE2.");
+					throw e;
+				}
+			}			
+
+			// The return value will give us information about how to proceed to getting a proper populated
+			// table back from Windows. If the return value is ERROR_INSUFFICIENT_BUFFER, then this means we
+			// need to increase the size of the table to the size that the failing call set currentTableSize
+			// to. That is to say, such a failed call will adjust the value of the parameter (passed here as
+			// currentTableSize) to tell the user how much memory to allocate to fit the current table into.
+			DWORD dwRetVal = 0;
+
+			if ((dwRetVal = GetTcpTable2(tcpHeader->UnmanagedTcpV4Table, &currentTableSize, FALSE)) == ERROR_INSUFFICIENT_BUFFER)
+			{
+				// Need to resize
+				free(tcpHeader->UnmanagedTcpV4Table);
+
+				// Allocate with returned, sufficient size
+				tcpHeader->UnmanagedTcpV4Table = static_cast<PMIB_TCPTABLE2>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (tcpHeader->UnmanagedTcpV4Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(TCPHeader^, IPHeader^, uint64_t%, System::String^) - Failed to reallocate TCPTABLE2.");
+					throw e;
+				}	
+
+				// Now this call should succeed
+				dwRetVal = GetTcpTable2(tcpHeader->UnmanagedTcpV4Table, &currentTableSize, FALSE);
+
+				if (dwRetVal != NOERROR && tcpHeader->UnmanagedTcpV4Table != nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(TCPHeader^, IPHeader^, uint64_t%, System::String^) - Error populating TCPTABLE2.");
+					throw e;
+				}
+			}	
+
+			// Not sure if this is necessary?
+			pin_ptr<ULONG> procIdPtr = &processId;
+
+			// If the traffic is outbound, we want to match the remote port. If it's inbound,
+			// we want to match the local port.
+			bool matchSrcPort = address->Direction == DivertDirection::Outbound;
+
+			// If we made it here, the table is valid and populated.
+			for (size_t i = 0; i < tcpHeader->UnmanagedTcpV4Table->dwNumEntries; ++i)
+			{
+				switch (matchSrcPort)
+				{
+					case true:
+					{
+						if (tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->SrcPort)
+						{
+							processId = tcpHeader->UnmanagedTcpV4Table->table[i].dwOwningPid;
+							break;
+						}
+					}
+					break;
+					default:
+					{
+						if (tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->DstPort)
+						{
+							processId = tcpHeader->UnmanagedTcpV4Table->table[i].dwOwningPid;
+							break;
+						}
+					}
+					break;
+				};
+			}
+
+			std::string procName = GetProcessName(processId);
+			processName = gcnew System::String(procName.c_str());
+
+			// We don't need to free the allocated table here. In fact, it's better not to.
+			// It's assumed that if the user is interested in the process information, they're
+			// going to be interested in the process information more than one time, and since
+			// packets can come through a gazillion at a time, the last thing we want to do
+			// is destroy and recreate the table every single time. 
+			// 
+			// So, we'll leave the table alone, it will only ever be freed and reallocated when
+			// its size is not sufficient. When all is said and done, the table will ultimately
+			// be freed automatically when its owning managed object is garbage collected.
+		}
+
+		void Diversion::GetPacketProcess(Address^ address, TCPHeader^ tcpHeader, IPv6Header^ ipv6Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName)
+		{
+			// In case something goes wrong, we'll create this and throw it.
+			System::Exception^ e = nullptr;
+
+			ULONG currentTableSize = 0;
+
+			// First, if the table has never been initialized, it needs to be.
+			if (tcpHeader->UnmanagedTcpV6Table == nullptr)
+			{
+				currentTableSize = sizeof(PMIB_TCP6TABLE2);
+				tcpHeader->UnmanagedTcpV6Table = static_cast<PMIB_TCP6TABLE2>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (tcpHeader->UnmanagedTcpV6Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(TCPHeader^, IPv6Header^, uint64_t%, System::String^) - Failed to allocate TCPTABLE2.");
+					throw e;
+				}
+			}
+
+			// The return value will give us information about how to proceed to getting a proper populated
+			// table back from Windows. If the return value is ERROR_INSUFFICIENT_BUFFER, then this means we
+			// need to increase the size of the table to the size that the failing call set currentTableSize
+			// to. That is to say, such a failed call will adjust the value of the parameter (passed here as
+			// currentTableSize) to tell the user how much memory to allocate to fit the current table into.
+			DWORD dwRetVal = 0;
+
+			if ((dwRetVal = GetTcp6Table2(tcpHeader->UnmanagedTcpV6Table, &currentTableSize, FALSE)) == ERROR_INSUFFICIENT_BUFFER)
+			{
+				// Need to resize
+				free(tcpHeader->UnmanagedTcpV6Table);
+
+				// Allocate with returned, sufficient size
+				tcpHeader->UnmanagedTcpV6Table = static_cast<PMIB_TCP6TABLE2>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (tcpHeader->UnmanagedTcpV6Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(TCPHeader^, IPv6Header^, uint64_t%, System::String^) - Failed to reallocate TCPTABLE2.");
+					throw e;
+				}
+
+				// Now this call should succeed
+				dwRetVal = GetTcp6Table2(tcpHeader->UnmanagedTcpV6Table, &currentTableSize, FALSE);
+
+				if (dwRetVal != NOERROR && tcpHeader->UnmanagedTcpV6Table != nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(TCPHeader^, IPv6Header^, uint64_t%, System::String^) - Error populating TCPTABLE2.");
+					throw e;
+				}
+			}
+
+			// Not sure if this is necessary?
+			pin_ptr<ULONG> procIdPtr = &processId;
+
+			// If the traffic is outbound, we want to match the remote port. If it's inbound,
+			// we want to match the local port.
+			bool matchSrcPort = address->Direction == DivertDirection::Outbound;
+
+			// If we made it here, the table is valid and populated.
+			for (size_t i = 0; i < tcpHeader->UnmanagedTcpV6Table->dwNumEntries; ++i)
+			{
+				switch (matchSrcPort)
+				{
+				case true:
+				{
+					if (tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->SrcPort)
+					{
+						processId = tcpHeader->UnmanagedTcpV6Table->table[i].dwOwningPid;
+						break;
+					}
+				}
+				break;
+				default:
+				{
+					if (tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->DstPort)
+					{
+						processId = tcpHeader->UnmanagedTcpV6Table->table[i].dwOwningPid;
+						break;
+					}
+				}
+				break;
+				};
+			}
+
+			std::string procName = GetProcessName(processId);
+			processName = gcnew System::String(procName.c_str());
+
+			// We don't need to free the allocated table here. In fact, it's better not to.
+			// It's assumed that if the user is interested in the process information, they're
+			// going to be interested in the process information more than one time, and since
+			// packets can come through a gazillion at a time, the last thing we want to do
+			// is destroy and recreate the table every single time. 
+			// 
+			// So, we'll leave the table alone, it will only ever be freed and reallocated when
+			// its size is not sufficient. When all is said and done, the table will ultimately
+			// be freed automatically when its owning managed object is garbage collected.
+		}
+
+		void Diversion::GetPacketProcess(Address^ address, UDPHeader^ udpHeader, IPHeader^ ipv4Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName)
+		{
+			// In case something goes wrong, we'll create this and throw it.
+			System::Exception^ e = nullptr;
+
+			ULONG currentTableSize = 0;
+
+			// First, if the table has never been initialized, it needs to be.
+			if (udpHeader->UnmanagedUdpV4Table == nullptr)
+			{
+				currentTableSize = sizeof(MIB_UDPTABLE_OWNER_PID);
+				udpHeader->UnmanagedUdpV4Table = static_cast<PMIB_UDPTABLE_OWNER_PID>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (udpHeader->UnmanagedUdpV4Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(UDPHeader^, IPHeader^, uint64_t%, System::String^) - Failed to allocate MIB_UDPTABLE_OWNER_PID.");
+					throw e;
+				}
+			}
+
+			// The return value will give us information about how to proceed to getting a proper populated
+			// table back from Windows. If the return value is ERROR_INSUFFICIENT_BUFFER, then this means we
+			// need to increase the size of the table to the size that the failing call set currentTableSize
+			// to. That is to say, such a failed call will adjust the value of the parameter (passed here as
+			// currentTableSize) to tell the user how much memory to allocate to fit the current table into.
+			DWORD dwRetVal = 0;
+
+			if ((dwRetVal = GetExtendedUdpTable(udpHeader->UnmanagedUdpV4Table, &currentTableSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0)) == ERROR_INSUFFICIENT_BUFFER)
+			{
+				// Need to resize
+				free(udpHeader->UnmanagedUdpV4Table);
+
+				// Allocate with returned, sufficient size
+				udpHeader->UnmanagedUdpV4Table = static_cast<PMIB_UDPTABLE_OWNER_PID>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (udpHeader->UnmanagedUdpV4Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(UDPHeader^, IPHeader^, uint64_t%, System::String^) - Failed to reallocate MIB_UDPTABLE_OWNER_PID.");
+					throw e;
+				}
+
+				// Now this call should succeed
+				dwRetVal = GetExtendedUdpTable(udpHeader->UnmanagedUdpV4Table, &currentTableSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0);
+
+				if (dwRetVal != NOERROR && udpHeader->UnmanagedUdpV4Table != nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(UDPHeader^, IPHeader^, uint64_t%, System::String^) - Error populating MIB_UDPTABLE_OWNER_PID.");
+					throw e;
+				}
+			}
+
+			// Not sure if this is necessary?
+			pin_ptr<ULONG> procIdPtr = &processId;
+
+			// If the traffic is outbound, we want to match the remote port. If it's inbound,
+			// we want to match the local port.
+			bool matchSrcPort = address->Direction == DivertDirection::Outbound;
+
+			// If we made it here, the table is valid and populated.
+			for (size_t i = 0; i < udpHeader->UnmanagedUdpV4Table->dwNumEntries; ++i)
+			{
+				switch (matchSrcPort)
+				{
+				case true:
+				{
+					if (udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->SrcPort)
+					{
+						processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
+						break;
+					}
+				}
+				break;
+				default:
+				{
+					if (udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->DstPort)
+					{
+						processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
+						break;
+					}
+				}
+				break;
+				};
+			}
+
+			std::string procName = GetProcessName(processId);
+			processName = gcnew System::String(procName.c_str());
+
+			// We don't need to free the allocated table here. In fact, it's better not to.
+			// It's assumed that if the user is interested in the process information, they're
+			// going to be interested in the process information more than one time, and since
+			// packets can come through a gazillion at a time, the last thing we want to do
+			// is destroy and recreate the table every single time. 
+			// 
+			// So, we'll leave the table alone, it will only ever be freed and reallocated when
+			// its size is not sufficient. When all is said and done, the table will ultimately
+			// be freed automatically when its owning managed object is garbage collected.
+
+		}
+
+		void Diversion::GetPacketProcess(Address^ address, UDPHeader^ udpHeader, IPv6Header^ ipv6Header, ULONG% processId, [System::Runtime::InteropServices::Out] System::String^% processName)
+		{
+			// In case something goes wrong, we'll create this and throw it.
+			System::Exception^ e = nullptr;
+
+			ULONG currentTableSize = 0;
+
+			// First, if the table has never been initialized, it needs to be.
+			if (udpHeader->UnmanagedUdpV6Table == nullptr)
+			{
+				currentTableSize = sizeof(MIB_UDP6TABLE_OWNER_PID);
+				udpHeader->UnmanagedUdpV6Table = static_cast<PMIB_UDP6TABLE_OWNER_PID>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (udpHeader->UnmanagedUdpV6Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(UDPHeader^, IPv6Header^, uint64_t%, System::String^) - Failed to allocate MIB_UDP6TABLE_OWNER_PID.");
+					throw e;
+				}
+			}
+
+			// The return value will give us information about how to proceed to getting a proper populated
+			// table back from Windows. If the return value is ERROR_INSUFFICIENT_BUFFER, then this means we
+			// need to increase the size of the table to the size that the failing call set currentTableSize
+			// to. That is to say, such a failed call will adjust the value of the parameter (passed here as
+			// currentTableSize) to tell the user how much memory to allocate to fit the current table into.
+			DWORD dwRetVal = 0;
+
+			if ((dwRetVal = GetExtendedUdpTable(udpHeader->UnmanagedUdpV6Table, &currentTableSize, FALSE, AF_INET6, UDP_TABLE_OWNER_PID, 0)) == ERROR_INSUFFICIENT_BUFFER)
+			{
+				// Need to resize
+				free(udpHeader->UnmanagedUdpV6Table);
+
+				// Allocate with returned, sufficient size
+				udpHeader->UnmanagedUdpV6Table = static_cast<PMIB_UDP6TABLE_OWNER_PID>(malloc(currentTableSize));
+
+				// If the table is still null, then we have failed to allocate, something is seriously wrong.
+				if (udpHeader->UnmanagedUdpV6Table == nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(UDPHeader^, IPv6Header^, uint64_t%, System::String^) - Failed to reallocate MIB_UDP6TABLE_OWNER_PID.");
+					throw e;
+				}
+
+				// Now this call should succeed
+				dwRetVal = GetExtendedUdpTable(udpHeader->UnmanagedUdpV6Table, &currentTableSize, FALSE, AF_INET6, UDP_TABLE_OWNER_PID, 0);
+
+				if (dwRetVal != NOERROR && udpHeader->UnmanagedUdpV6Table != nullptr)
+				{
+					e = gcnew System::Exception(u8"In Diversion::GetPacketProcess(UDPHeader^, IPv6Header^, uint64_t%, System::String^) - Error populating MIB_UDP6TABLE_OWNER_PID.");
+					throw e;
+				}
+			}
+
+			// Not sure if this is necessary?
+			pin_ptr<ULONG> procIdPtr = &processId;
+
+			// If the traffic is outbound, we want to match the remote port. If it's inbound,
+			// we want to match the local port.
+			bool matchSrcPort = address->Direction == DivertDirection::Outbound;
+
+			// If we made it here, the table is valid and populated.
+			for (size_t i = 0; i < udpHeader->UnmanagedUdpV6Table->dwNumEntries; ++i)
+			{
+				switch (matchSrcPort)
+				{
+				case true:
+				{
+					if (udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->SrcPort)
+					{
+						processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
+						break;
+					}
+				}
+				break;
+				default:
+				{
+					if (udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->DstPort)
+					{
+						processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
+						break;
+					}
+				}
+				break;
+				};
+			}
+
+			std::string procName = GetProcessName(processId);
+			processName = gcnew System::String(procName.c_str());
+
+			// We don't need to free the allocated table here. In fact, it's better not to.
+			// It's assumed that if the user is interested in the process information, they're
+			// going to be interested in the process information more than one time, and since
+			// packets can come through a gazillion at a time, the last thing we want to do
+			// is destroy and recreate the table every single time. 
+			// 
+			// So, we'll leave the table alone, it will only ever be freed and reallocated when
+			// its size is not sufficient. When all is said and done, the table will ultimately
+			// be freed automatically when its owning managed object is garbage collected.
+		}
+
 		Diversion::Diversion()
 		{
 
@@ -200,17 +601,17 @@ namespace Divert
 
 		Diversion::!Diversion()
 		{
-			delete m_handle;
+			delete m_winDivertHandle;
 		}
 
 		DivertHandle^ Diversion::Handle::get()
 		{
-			return m_handle;
+			return m_winDivertHandle;
 		}	
 
 		void Diversion::Handle::set(DivertHandle^ value)
 		{
-			m_handle = value;
+			m_winDivertHandle = value;
 		}
 
 		bool Diversion::Receive(array<System::Byte>^ packetBuffer, Address^ address, uint32_t% receiveLength)
@@ -234,7 +635,7 @@ namespace Divert
 			
 			uint32_t readLen = 0;
 
-			int result = WinDivertRecv(m_handle->UnmanagedHandle, byteArray, packetBuffer->Length, address->UnmanagedAddress, &readLen);
+			int result = WinDivertRecv(m_winDivertHandle->UnmanagedHandle, byteArray, packetBuffer->Length, address->UnmanagedAddress, &readLen);
 			
 			receiveLength = readLen;
 
@@ -273,7 +674,7 @@ namespace Divert
 
 				//Attempt a read, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
-				if (!WinDivertRecvEx(m_handle->UnmanagedHandle, byteArray, packetBuffer->Length, 0, address->UnmanagedAddress, pinnedRecvLen, nullptr))
+				if (!WinDivertRecvEx(m_winDivertHandle->UnmanagedHandle, byteArray, packetBuffer->Length, 0, address->UnmanagedAddress, pinnedRecvLen, nullptr))
 				{
 					return false;
 				}
@@ -299,7 +700,7 @@ namespace Divert
 				}
 
 				asyncResult->Buffer = bufferHandle;
-				asyncResult->WinDivertHandle = m_handle;
+				asyncResult->WinDivertHandle = m_winDivertHandle;
 
 				System::IntPtr bPtr = bufferHandle.AddrOfPinnedObject();
 
@@ -310,7 +711,7 @@ namespace Divert
 					throw e;
 				}			
 
-				if (!WinDivertRecvEx(m_handle->UnmanagedHandle, static_cast<void*>(bPtr), packetBuffer->Length, 0, address->UnmanagedAddress, &recvLength, asyncResult->UnmanagedOverlapped))
+				if (!WinDivertRecvEx(m_winDivertHandle->UnmanagedHandle, static_cast<void*>(bPtr), packetBuffer->Length, 0, address->UnmanagedAddress, &recvLength, asyncResult->UnmanagedOverlapped))
 				{
 					int lastError = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
 					if (lastError != ERROR_IO_PENDING)
@@ -345,7 +746,7 @@ namespace Divert
 
 			uint32_t sendLen = 0;
 
-			int result = WinDivertSend(m_handle->UnmanagedHandle, byteArray, packetLength, address->UnmanagedAddress, &sendLen);
+			int result = WinDivertSend(m_winDivertHandle->UnmanagedHandle, byteArray, packetLength, address->UnmanagedAddress, &sendLen);
 
 			sendLength = sendLen;
 
@@ -375,7 +776,7 @@ namespace Divert
 
 				// Attempt a Send, if it fails, because the user did not provide an async result object, we just
 				// abandon the entire operation.
-				if (!WinDivertSendEx(m_handle->UnmanagedHandle, byteArray, packetLength, 0, address->UnmanagedAddress, &sendLen, nullptr))
+				if (!WinDivertSendEx(m_winDivertHandle->UnmanagedHandle, byteArray, packetLength, 0, address->UnmanagedAddress, &sendLen, nullptr))
 				{
 					return false;
 				}
@@ -401,7 +802,7 @@ namespace Divert
 				}
 
 				asyncResult->Buffer = bufferHandle;
-				asyncResult->WinDivertHandle = m_handle;
+				asyncResult->WinDivertHandle = m_winDivertHandle;
 
 				System::IntPtr bPtr = bufferHandle.AddrOfPinnedObject();
 
@@ -412,7 +813,7 @@ namespace Divert
 					throw e;
 				}
 
-				if (!WinDivertSendEx(m_handle->UnmanagedHandle, static_cast<void*>(bPtr), packetBuffer->Length, 0, address->UnmanagedAddress, &sendLen, asyncResult->UnmanagedOverlapped))
+				if (!WinDivertSendEx(m_winDivertHandle->UnmanagedHandle, static_cast<void*>(bPtr), packetBuffer->Length, 0, address->UnmanagedAddress, &sendLen, asyncResult->UnmanagedOverlapped))
 				{
 					int lastError = System::Runtime::InteropServices::Marshal::GetLastWin32Error();
 					if (lastError != ERROR_IO_PENDING)
@@ -435,9 +836,9 @@ namespace Divert
 
 		bool Diversion::Close()
 		{
-			if (m_handle && m_handle->Valid)
+			if (m_winDivertHandle && m_winDivertHandle->Valid)
 			{
-				return m_handle->Close();
+				return m_winDivertHandle->Close();
 			}
 
 			return false;
@@ -446,15 +847,15 @@ namespace Divert
 		bool Diversion::SetParam(DivertParam param, uint64_t value)
 		{
 			// No. No you may not. Seriously though this shouldn't happen.
-			if (m_handle == nullptr ||
-				m_handle->UnmanagedHandle == nullptr ||
-				m_handle->UnmanagedHandle == INVALID_HANDLE_VALUE
+			if (m_winDivertHandle == nullptr ||
+				m_winDivertHandle->UnmanagedHandle == nullptr ||
+				m_winDivertHandle->UnmanagedHandle == INVALID_HANDLE_VALUE
 				)
 			{				
 				return false;
 			}
 
-			int result = WinDivertSetParam(m_handle->UnmanagedHandle, static_cast<WINDIVERT_PARAM>(param), value);
+			int result = WinDivertSetParam(m_winDivertHandle->UnmanagedHandle, static_cast<WINDIVERT_PARAM>(param), value);
 
 			return result == 1;
 		}
@@ -462,16 +863,16 @@ namespace Divert
 		bool Diversion::GetParam(DivertParam param, uint64_t% value)
 		{
 			// No. No you may not. Seriously though this shouldn't happen.
-			if (m_handle == nullptr ||
-				m_handle->UnmanagedHandle == nullptr ||
-				m_handle->UnmanagedHandle == INVALID_HANDLE_VALUE
+			if (m_winDivertHandle == nullptr ||
+				m_winDivertHandle->UnmanagedHandle == nullptr ||
+				m_winDivertHandle->UnmanagedHandle == INVALID_HANDLE_VALUE
 				)
 			{
 				return false;
 			}
 
 			uint64_t retVal = 0;
-			int result = WinDivertGetParam(m_handle->UnmanagedHandle, static_cast<WINDIVERT_PARAM>(param), &retVal);
+			int result = WinDivertGetParam(m_winDivertHandle->UnmanagedHandle, static_cast<WINDIVERT_PARAM>(param), &retVal);
 
 			return result == 1;
 		}
@@ -602,6 +1003,39 @@ namespace Divert
 			int retVal = WinDivertHelperCalcChecksums(byteArray, packetLength, flagsInt);
 
 			return retVal == 1;
+		}
+
+		std::string Diversion::GetProcessName(const ULONG processId)
+		{
+			std::string result("SYSTEM");
+
+			HANDLE processHandle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, processId);
+
+			if (processHandle != NULL && processHandle != INVALID_HANDLE_VALUE)
+			{
+				char filename[MAX_PATH];
+				DWORD resSize = MAX_PATH;
+
+				if (QueryFullProcessImageNameA(processHandle, 0, filename, &resSize) == 0)
+				{
+					// Failed to get module filename.
+					CloseHandle(processHandle);
+					return result;
+				}
+				else
+				{
+					// Success
+					result = std::string(filename);
+					CloseHandle(processHandle);
+					return result;
+				}
+			}
+
+			// Failed to open a valid handle. This is almost surely a SYSTEM process, or protected by AV.
+			// Let's not throw any errors. It is expected behavior that this call may fail for reasons such
+			// as I listed above, or the process is closed and the ID reassigned before this call is 
+			// processed.
+			return result;
 		}
 
 	} /* namespace Net */

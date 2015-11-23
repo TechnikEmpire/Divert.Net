@@ -11,6 +11,8 @@ namespace NetDump
     {
         static void Main(string[] args)
         {
+            Console.WindowWidth = Console.LargestWindowWidth;
+
             bool running = true;
 
             Console.CancelKeyPress += delegate {
@@ -50,8 +52,14 @@ namespace NetDump
 
             uint receiveLength = 0;
 
-            while(running)
+            string processName;
+
+            uint pid = 0;
+
+            while (running)
             {
+                pid = 0;
+
                 receiveLength = 0;
 
                 if (!diversion.Receive(buffer, address, ref receiveLength))
@@ -63,20 +71,52 @@ namespace NetDump
                 diversion.ParsePacket(buffer, receiveLength, ipHeader, ipv6Header, icmpHeader, icmpv6Header, tcpHeader, udpHeader);
 
                 if (ipHeader.Valid && tcpHeader.Valid)
-                {
-                    Console.WriteLine("{0} IPv4 TCP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(), ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString());
+                {                    
+                    Diversion.GetPacketProcess(address, tcpHeader, ipHeader, ref pid, out processName);
+
+                    Console.WriteLine(
+                        "{0} IPv4 TCP packet captured destined for {1}:{2} from {3}:{4} {5}.", 
+                        address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", 
+                        ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(), 
+                        ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString(),
+                        address.Direction == DivertDirection.Inbound ? string.Format("to process {0}", processName) : string.Format("from process {0}", processName)
+                        );
                 }
                 else if(ipHeader.Valid && udpHeader.Valid)
                 {
-                    Console.WriteLine("{0} IPv4 UDP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipHeader.DestinationAddress.ToString(), udpHeader.DestinationPort.ToString(), ipHeader.SourceAddress.ToString(), udpHeader.SourcePort.ToString());
+                    Diversion.GetPacketProcess(address, udpHeader, ipHeader, ref pid, out processName);
+
+                    Console.WriteLine(
+                        "{0} IPv4 UDP packet captured destined for {1}:{2} from {3}:{4} {5}.",
+                        address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound",
+                        ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(),
+                        ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString(),
+                        address.Direction == DivertDirection.Inbound ? string.Format("to process {0}", processName) : string.Format("from process {0}", processName)
+                        );                   
                 }
                 else if(ipv6Header.Valid && tcpHeader.Valid)
                 {
-                    Console.WriteLine("{0} IPv6 TCP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipv6Header.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(), ipv6Header.SourceAddress.ToString(), tcpHeader.SourcePort.ToString());
+                    Diversion.GetPacketProcess(address, tcpHeader, ipv6Header, ref pid, out processName);
+
+                    Console.WriteLine(
+                        "{0} IPv6 TCP packet captured destined for {1}:{2} from {3}:{4} {5}.",
+                        address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound",
+                        ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(),
+                        ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString(),
+                        address.Direction == DivertDirection.Inbound ? string.Format("to process {0}", processName) : string.Format("from process {0}", processName)
+                        );                    
                 }
                 else if (ipv6Header.Valid && udpHeader.Valid)
                 {
-                    Console.WriteLine("{0} IPv6 UDP packet captured destined for {1}:{2} from {3}:{4}", address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound", ipv6Header.DestinationAddress.ToString(), udpHeader.DestinationPort.ToString(), ipv6Header.SourceAddress.ToString(), udpHeader.SourcePort.ToString());
+                    Diversion.GetPacketProcess(address, udpHeader, ipv6Header, ref pid, out processName);
+
+                    Console.WriteLine(
+                        "{0} IPv6 UDP packet captured destined for {1}:{2} from {3}:{4} {5}.",
+                        address.Direction == DivertDirection.Inbound ? "Inbound" : "Outbound",
+                        ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(),
+                        ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString(),
+                        address.Direction == DivertDirection.Inbound ? string.Format("to process {0}", processName) : string.Format("from process {0}", processName)
+                        );                   
                 }
             }
 
