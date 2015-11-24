@@ -135,10 +135,10 @@ namespace Divert
 			/// <summary>
 			/// Allow internal construction with the supplied unmanaged UDP header.
 			/// </summary>
-			/// <param name="address">
+			/// <param name="udpHeader">
 			/// Unmanaged PWINDIVERT_UDPHDR to construct this wrapper around.
 			/// </param>
-			UDPHeader(PWINDIVERT_UDPHDR UDPHeader);
+			UDPHeader(PWINDIVERT_UDPHDR udpHeader);
 
 			/// <summary>
 			/// Internal accessor to the unmanaged PWINDIVERT_UDPHDR object held by this object. 

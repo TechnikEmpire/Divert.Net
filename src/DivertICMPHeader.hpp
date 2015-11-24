@@ -100,7 +100,7 @@ namespace Divert
 			/// <summary>
 			/// Allow internal construction with the supplied unmanaged icmp header.
 			/// </summary>
-			/// <param name="address">
+			/// <param name="icmpHeader">
 			/// Unmanaged PWINDIVERT_ICMPHDR to construct this wrapper around.
 			/// </param>
 			ICMPHeader(PWINDIVERT_ICMPHDR icmpHeader);

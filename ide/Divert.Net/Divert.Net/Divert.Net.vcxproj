@@ -177,6 +177,8 @@
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -187,6 +189,9 @@
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug x86|x64'">
     <ClCompile>
@@ -197,6 +202,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -207,6 +214,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x86|Win32'">
     <ClCompile>
@@ -216,6 +226,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -226,6 +238,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug x64|Win32'">
     <ClCompile>
@@ -235,6 +250,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -246,6 +263,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x64|Win32'">
     <ClCompile>
@@ -255,6 +275,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -266,6 +288,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x86|x64'">
     <ClCompile>
@@ -275,6 +300,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -285,6 +312,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug x64|x64'">
     <ClCompile>
@@ -294,6 +324,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -305,6 +337,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release x64|x64'">
     <ClCompile>
@@ -314,6 +349,8 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\deps\windivert\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
+      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -325,6 +362,9 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
       <Command>xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.dll" "$(OutDir)"
 xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDir)"</Command>
     </PostBuildEvent>
+    <Xdcmake>
+      <DocumentLibraryDependencies>false</DocumentLibraryDependencies>
+    </Xdcmake>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -199,7 +199,7 @@ namespace Divert
 			/// <summary>
 			/// Allow internal construction with the supplied unmanaged TCP header.
 			/// </summary>
-			/// <param name="address">
+			/// <param name="tcpHeader">
 			/// Unmanaged PWINDIVERT_TCPHDR to construct this wrapper around.
 			/// </param>
 			TCPHeader(PWINDIVERT_TCPHDR tcpHeader);

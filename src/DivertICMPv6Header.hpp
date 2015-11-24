@@ -100,7 +100,7 @@ namespace Divert
 			/// <summary>
 			/// Allow internal construction with the supplied unmanaged icmpv6 header.
 			/// </summary>
-			/// <param name="address">
+			/// <param name="icmpv6Header">
 			/// Unmanaged PWINDIVERT_ICMPV6HDR to construct this wrapper around.
 			/// </param>
 			ICMPv6Header(PWINDIVERT_ICMPV6HDR icmpv6Header);

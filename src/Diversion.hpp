@@ -424,7 +424,7 @@ namespace Divert
 			/// Sets a WinDivert parameter. More information here:
 			/// https://reqrypt.org/windivert-doc.html#divert_get_param
 			/// </summary>
-			/// <param name="param">
+			/// <param name="divertParam">
 			/// The DivertParam to set the value of. See comments on DivertParam enum members for
 			/// specific parameter information.
 			/// </param>
@@ -435,13 +435,13 @@ namespace Divert
 			/// True if successful, false if an error occurred. Use Marshal.GetLastWin32Error() to
 			/// get the reason for the error.
 			/// </returns>
-			bool SetParam(DivertParam param, uint64_t value);
+			bool SetParam(DivertParam divertParam, uint64_t value);
 
 			/// <summary>
 			/// Gets a WinDivert parameter value. More information here:
 			/// https://reqrypt.org/windivert-doc.html#divert_set_param
 			/// </summary>
-			/// <param name="">
+			/// <param name="divertParam">
 			/// The DivertParam to get the value of. See comments on DivertParam enum members for
 			/// specific parameter information.
 			/// </param>
@@ -452,7 +452,7 @@ namespace Divert
 			/// True if successful, false if an error occurred. Use Marshal.GetLastWin32Error() to
 			/// get the reason for the error.
 			/// </returns>
-			bool GetParam(DivertParam param, uint64_t% value);
+			bool GetParam(DivertParam divertParam, uint64_t% value);
 
 			/// <summary>
 			/// Parses a raw packet (e.g. from WinDivertRecv()) into the various packet headers

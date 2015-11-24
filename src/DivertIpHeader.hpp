@@ -160,7 +160,7 @@ namespace Divert
 			/// <summary>
 			/// Allow internal construction with the supplied unmanaged ip header.
 			/// </summary>
-			/// <param name="address">
+			/// <param name="ipHeader">
 			/// Unmanaged PWINDIVERT_IPHDR to construct this wrapper around.
 			/// </param>
 			IPHeader(PWINDIVERT_IPHDR ipHeader);

@@ -120,7 +120,7 @@ namespace Divert
 			/// <summary>
 			/// Allow internal construction with the supplied unmanaged ip header.
 			/// </summary>
-			/// <param name="address">
+			/// <param name="ipv6Header">
 			/// Unmanaged PWINDIVERT_IPV6HDR to construct this wrapper around.
 			/// </param>
 			IPv6Header(PWINDIVERT_IPV6HDR ipv6Header);

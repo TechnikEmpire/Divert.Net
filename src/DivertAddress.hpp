@@ -77,7 +77,7 @@ namespace Divert
 				void set(uint32_t value);
 			}
 
-			// <summary>
+			/// <summary>
 			/// The sub-interface index for IfIdx. Taken from
 			/// https://reqrypt.org/windivert-doc.html#divert_address.
 			/// </summary>

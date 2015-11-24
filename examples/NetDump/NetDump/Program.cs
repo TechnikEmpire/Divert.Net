@@ -42,7 +42,7 @@ namespace NetDump
             string filter = "true";
 
             try
-            {                
+            {   
                 diversion = Diversion.Open(filter, DivertLayer.Network, 100, 0);
             }
             catch(Exception e)
