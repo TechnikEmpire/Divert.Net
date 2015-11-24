@@ -250,23 +250,23 @@ namespace Divert
 				{
 					case true:
 					{
-						if (tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->SrcPort)
+						if (static_cast<u_short>(tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->SrcPort)
 						{
 							processId = tcpHeader->UnmanagedTcpV4Table->table[i].dwOwningPid;
 							break;
 						}
 					}
 					break;
-					default:
+					case false:
 					{
-						if (tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->DstPort)
+						if (static_cast<u_short>(tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->DstPort)
 						{
 							processId = tcpHeader->UnmanagedTcpV4Table->table[i].dwOwningPid;
 							break;
 						}
 					}
 					break;
-				};
+				}
 			}
 
 			std::string procName = GetProcessName(processId);
@@ -350,23 +350,23 @@ namespace Divert
 				{
 				case true:
 				{
-					if (tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->SrcPort)
+					if (static_cast<u_short>(tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->SrcPort)
 					{
 						processId = tcpHeader->UnmanagedTcpV6Table->table[i].dwOwningPid;
 						break;
 					}
 				}
 				break;
-				default:
+				case false:
 				{
-					if (tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort == tcpHeader->UnmanagedHeader->DstPort)
+					if (static_cast<u_short>(tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->DstPort)
 					{
 						processId = tcpHeader->UnmanagedTcpV6Table->table[i].dwOwningPid;
 						break;
 					}
 				}
 				break;
-				};
+				}
 			}
 
 			std::string procName = GetProcessName(processId);
@@ -450,23 +450,23 @@ namespace Divert
 				{
 				case true:
 				{
-					if (udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->SrcPort)
+					if (static_cast<u_short>(udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->SrcPort)
 					{
 						processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
 						break;
 					}
 				}
 				break;
-				default:
+				case false:
 				{
-					if (udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->DstPort)
+					if (static_cast<u_short>(udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->DstPort)
 					{
 						processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
 						break;
 					}
 				}
 				break;
-				};
+				}
 			}
 
 			std::string procName = GetProcessName(processId);
@@ -551,23 +551,23 @@ namespace Divert
 				{
 				case true:
 				{
-					if (udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->SrcPort)
+					if (static_cast<u_short>(udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->SrcPort)
 					{
 						processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
 						break;
 					}
 				}
 				break;
-				default:
+				case false:
 				{
-					if (udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort == udpHeader->UnmanagedHeader->DstPort)
+					if (static_cast<u_short>(udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->DstPort)
 					{
 						processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
 						break;
 					}
 				}
 				break;
-				};
+				}
 			}
 
 			std::string procName = GetProcessName(processId);
@@ -1011,7 +1011,7 @@ namespace Divert
 
 			HANDLE processHandle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, processId);
 
-			if (processHandle != NULL && processHandle != INVALID_HANDLE_VALUE)
+			if (processHandle != nullptr && processHandle != INVALID_HANDLE_VALUE)
 			{
 				char filename[MAX_PATH];
 				DWORD resSize = MAX_PATH;
