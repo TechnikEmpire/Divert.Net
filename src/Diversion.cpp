@@ -955,6 +955,9 @@ namespace Divert
 
 			if (packetDataLength > 0 && packetDataPointer != nullptr)
 			{
+				
+				pin_ptr<System::Byte> byteArray = &packetData[0];
+
 				System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void*)packetDataPointer), packetData, 0, packetDataLength);
 			}	
 

@@ -74,7 +74,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return System::Net::IPAddress::NetworkToHostOrder(static_cast<short>(m_udpHeader->SrcPort));
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->SrcPort));
 			}
 
 			return 0;
@@ -84,7 +84,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->SrcPort = System::Net::IPAddress::HostToNetworkOrder(value);
+				m_udpHeader->SrcPort = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return System::Net::IPAddress::NetworkToHostOrder(static_cast<short>(m_udpHeader->DstPort));
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->DstPort));
 			}
 
 			return 0;
@@ -102,7 +102,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->DstPort = System::Net::IPAddress::HostToNetworkOrder(value);
+				m_udpHeader->DstPort = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return m_udpHeader->Length;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->Length));				
 			}
 
 			return 0;
@@ -120,7 +120,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->Length = value;
+				m_udpHeader->Length = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -128,7 +128,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return m_udpHeader->Checksum;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->Checksum));				
 			}
 
 			return 0;
@@ -138,7 +138,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->Checksum = value;
+				m_udpHeader->Checksum = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 

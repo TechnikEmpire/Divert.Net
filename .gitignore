@@ -1,4 +1,5 @@
 ## Ignore bin directories, deps directories, etc
+examples/FilteringHttpsCapableProxy/
 build/
 deps/
 ide/Divert.Net/Divert.Net/Intermediates
@@ -203,3 +204,5 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+examples/FilteringHttpsCapableProxy/FilteringHttpsCapableProxy/NLog.xsd
+ide/Divert.Net/Divert.Net.VC.db

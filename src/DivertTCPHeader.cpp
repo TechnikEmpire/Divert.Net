@@ -73,7 +73,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return System::Net::IPAddress::NetworkToHostOrder((short)m_tcpHeader->SrcPort);
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_tcpHeader->SrcPort));
 			}
 
 			return 0;
@@ -83,7 +83,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->SrcPort = System::Net::IPAddress::HostToNetworkOrder(value);
+				m_tcpHeader->SrcPort = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{				
-				return System::Net::IPAddress::NetworkToHostOrder((short)m_tcpHeader->DstPort);
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_tcpHeader->DstPort));
 			}
 
 			return 0;
@@ -101,7 +101,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->DstPort = System::Net::IPAddress::HostToNetworkOrder(value);
+				m_tcpHeader->DstPort = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->SeqNum;
+				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->SeqNum)));				
 			}
 
 			return 0;
@@ -119,7 +119,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->SeqNum = value;
+				m_tcpHeader->SeqNum = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -127,7 +127,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->AckNum;
+				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->AckNum)));
 			}
 
 			return 0;
@@ -137,7 +137,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->AckNum = value;
+				m_tcpHeader->AckNum = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -145,7 +145,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Reserved1;
+				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Reserved1)));
 			}
 
 			return 0;
@@ -155,7 +155,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Reserved1 = value;
+				m_tcpHeader->Reserved1 = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -163,7 +163,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->HdrLength;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->HdrLength)));
 			}
 
 			return 0;
@@ -173,7 +173,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->HdrLength = value;
+				m_tcpHeader->HdrLength = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -181,7 +181,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Fin;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Fin)));			
 			}
 
 			return 0;
@@ -191,7 +191,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Fin = value;
+				m_tcpHeader->Fin = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Syn;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Syn)));				
 			}
 
 			return 0;
@@ -209,7 +209,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Syn = value;
+				m_tcpHeader->Syn = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -217,7 +217,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Rst;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Rst)));				
 			}
 
 			return 0;
@@ -227,7 +227,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Rst = value;
+				m_tcpHeader->Rst = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -235,7 +235,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Psh;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Psh)));				
 			}
 
 			return 0;
@@ -245,7 +245,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Psh = value;
+				m_tcpHeader->Psh = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -253,7 +253,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Ack;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Ack)));
 			}
 
 			return 0;
@@ -263,7 +263,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Ack = value;
+				m_tcpHeader->Ack = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -271,7 +271,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Urg;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Urg)));				
 			}
 
 			return 0;
@@ -281,7 +281,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Urg = value;
+				m_tcpHeader->Urg = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -289,7 +289,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Reserved2;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Reserved2)));
 			}
 
 			return 0;
@@ -299,7 +299,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Reserved2 = value;
+				m_tcpHeader->Reserved2 = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -307,7 +307,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Window;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Window)));				
 			}
 
 			return 0;
@@ -317,7 +317,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Window = value;
+				m_tcpHeader->Window = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -325,7 +325,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->Checksum;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->Checksum)));				
 			}
 
 			return 0;
@@ -335,7 +335,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->Checksum = value;
+				m_tcpHeader->Checksum = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
@@ -343,7 +343,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				return m_tcpHeader->UrgPtr;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_tcpHeader->UrgPtr)));				
 			}
 
 			return 0;
@@ -353,7 +353,7 @@ namespace Divert
 		{
 			if (m_tcpHeader != nullptr)
 			{
-				m_tcpHeader->UrgPtr = value;
+				m_tcpHeader->UrgPtr = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 

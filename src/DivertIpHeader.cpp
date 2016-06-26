@@ -117,7 +117,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return m_ipHeader->Length;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_ipHeader->Length));				
 			}
 
 			return 0;
@@ -127,7 +127,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				m_ipHeader->Length = value;
+				m_ipHeader->Length = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return m_ipHeader->Id;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_ipHeader->Id));				
 			}
 
 			return 0;
@@ -145,7 +145,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				m_ipHeader->Id = value;
+				m_ipHeader->Id = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -153,7 +153,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return WINDIVERT_IPHDR_GET_FRAGOFF(m_ipHeader);
+				auto value = WINDIVERT_IPHDR_GET_FRAGOFF(m_ipHeader);
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));
 			}
 
 			return 0;
@@ -163,7 +164,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				WINDIVERT_IPHDR_SET_FRAGOFF(m_ipHeader, value);
+				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				WINDIVERT_IPHDR_SET_FRAGOFF(m_ipHeader, modifiedValue);
 			}
 		}
 
@@ -171,7 +173,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return WINDIVERT_IPHDR_GET_MF(m_ipHeader);
+				auto value = WINDIVERT_IPHDR_GET_MF(m_ipHeader);
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));
 			}
 
 			return 0;
@@ -181,7 +184,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				WINDIVERT_IPHDR_SET_MF(m_ipHeader, value);
+				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				WINDIVERT_IPHDR_SET_MF(m_ipHeader, modifiedValue);
 			}
 		}
 
@@ -189,7 +193,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return WINDIVERT_IPHDR_GET_DF(m_ipHeader);
+				auto value = WINDIVERT_IPHDR_GET_DF(m_ipHeader);
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));				
 			}
 
 			return 0;
@@ -199,7 +204,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				WINDIVERT_IPHDR_SET_DF(m_ipHeader, value);
+				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				WINDIVERT_IPHDR_SET_DF(m_ipHeader, modifiedValue);
 			}
 		}
 
@@ -207,7 +213,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return WINDIVERT_IPHDR_GET_RESERVED(m_ipHeader);
+				auto value = WINDIVERT_IPHDR_GET_RESERVED(m_ipHeader);
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));				
 			}
 
 			return 0;
@@ -217,7 +224,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				WINDIVERT_IPHDR_SET_RESERVED(m_ipHeader, value);
+				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				WINDIVERT_IPHDR_SET_RESERVED(m_ipHeader, modifiedValue);
 			}
 		}
 
@@ -261,7 +269,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return m_ipHeader->Checksum;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_ipHeader->Checksum));				
 			}
 
 			return 0;
@@ -271,7 +279,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				m_ipHeader->Checksum = value;				
+				m_ipHeader->Checksum = static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));
 			}
 		}
 
@@ -281,7 +289,7 @@ namespace Divert
 			{
 				if (m_ipHeader->SrcAddr != m_lastSrcAddr && ((m_ipHeader->SrcAddr > 0 && m_ipHeader->SrcAddr <= 0x00000000FFFFFFFF)))
 				{
-					m_sourceAddress = gcnew System::Net::IPAddress(m_ipHeader->SrcAddr);
+					m_sourceAddress = gcnew System::Net::IPAddress(static_cast<long long>(m_ipHeader->SrcAddr));
 					m_lastSrcAddr = m_ipHeader->SrcAddr;
 				}
 			}
@@ -309,7 +317,7 @@ namespace Divert
 			{
 				if (m_ipHeader->DstAddr != m_lastDstAddr && ((m_ipHeader->SrcAddr > 0 && m_ipHeader->SrcAddr <= 0x00000000FFFFFFFF)))
 				{
-					m_destinationAddress = gcnew System::Net::IPAddress(m_ipHeader->DstAddr);
+					m_destinationAddress = gcnew System::Net::IPAddress(static_cast<long long>(m_ipHeader->DstAddr));
 					m_lastDstAddr = m_ipHeader->DstAddr;
 				}
 			}

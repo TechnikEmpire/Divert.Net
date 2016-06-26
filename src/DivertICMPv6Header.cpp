@@ -97,7 +97,7 @@ namespace Divert
 		{
 			if (m_icmpv6Header != nullptr)
 			{
-				return m_icmpv6Header->Checksum;
+				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_icmpv6Header->Checksum));				
 			}
 
 			return 0;
@@ -107,7 +107,7 @@ namespace Divert
 		{
 			if (m_icmpv6Header != nullptr)
 			{
-				m_icmpv6Header->Checksum = value;
+				m_icmpv6Header->Checksum = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace Divert
 		{
 			if (m_icmpv6Header != nullptr)
 			{
-				return m_icmpv6Header->Body;
+				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_icmpv6Header->Body)));				
 			}
 
 			return 0;
@@ -125,7 +125,7 @@ namespace Divert
 		{
 			if (m_icmpv6Header != nullptr)
 			{
-				m_icmpv6Header->Body = value;
+				m_icmpv6Header->Body = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
 			}
 		}
 
