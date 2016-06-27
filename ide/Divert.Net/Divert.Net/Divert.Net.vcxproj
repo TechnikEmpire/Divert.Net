@@ -382,6 +382,7 @@ xcopy /Y "$(ProjectDir)..\..\..\deps\windivert\$(PlatformTarget)\*.sys" "$(OutDi
     <ClInclude Include="..\..\..\src\DivertIpv6Header.hpp" />
     <ClInclude Include="..\..\..\src\DivertTCPHeader.hpp" />
     <ClInclude Include="..\..\..\src\DivertUDPHeader.hpp" />
+    <ClInclude Include="..\..\..\src\Util.hpp" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

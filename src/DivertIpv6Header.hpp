@@ -64,10 +64,16 @@ namespace Divert
 			/// </summary>
 			!IPv6Header();
 
-			property uint32_t Version
+			property uint16_t Length
 			{
-				uint32_t get();
-				void set(uint32_t value);
+				uint16_t get();
+				void set(uint16_t value);
+			}
+
+			property System::Byte Version
+			{
+				System::Byte get();
+				void set(System::Byte value);
 			}
 
 			property uint32_t TrafficClass

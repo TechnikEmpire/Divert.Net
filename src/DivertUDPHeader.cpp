@@ -24,6 +24,8 @@
 
 #include "DivertUDPHeader.hpp"
 
+#include "Util.hpp"
+
 namespace Divert
 {
 	namespace Net
@@ -74,7 +76,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->SrcPort));
+				return ByteSwap(m_udpHeader->SrcPort);
 			}
 
 			return 0;
@@ -84,7 +86,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->SrcPort = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_udpHeader->SrcPort = ByteSwap(value);
 			}
 		}
 
@@ -92,7 +94,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->DstPort));
+				return ByteSwap(m_udpHeader->DstPort);
 			}
 
 			return 0;
@@ -102,7 +104,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->DstPort = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_udpHeader->DstPort = ByteSwap(value);
 			}
 		}
 
@@ -110,7 +112,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->Length));				
+				return ByteSwap(m_udpHeader->Length);				
 			}
 
 			return 0;
@@ -120,7 +122,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->Length = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_udpHeader->Length = ByteSwap(value);
 			}
 		}
 
@@ -128,7 +130,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_udpHeader->Checksum));				
+				return ByteSwap(m_udpHeader->Checksum);				
 			}
 
 			return 0;
@@ -138,7 +140,7 @@ namespace Divert
 		{
 			if (m_udpHeader != nullptr)
 			{
-				m_udpHeader->Checksum = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_udpHeader->Checksum = ByteSwap(value);
 			}
 		}
 

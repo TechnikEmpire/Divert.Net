@@ -206,3 +206,4 @@ FakesAssemblies/
 *.opt
 examples/FilteringHttpsCapableProxy/FilteringHttpsCapableProxy/NLog.xsd
 ide/Divert.Net/Divert.Net.VC.db
+*.opendb

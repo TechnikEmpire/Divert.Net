@@ -24,6 +24,8 @@
 
 #include "DivertICMPHeader.hpp"
 
+#include "Util.hpp"
+
 namespace Divert
 {
 	namespace Net
@@ -96,8 +98,8 @@ namespace Divert
 		uint16_t ICMPHeader::Checksum::get()
 		{
 			if (m_icmpHeader != nullptr)
-			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_icmpHeader->Checksum));				
+			{	
+				return ByteSwap(m_icmpHeader->Checksum);				
 			}
 
 			return 0;
@@ -107,7 +109,7 @@ namespace Divert
 		{
 			if (m_icmpHeader != nullptr)
 			{
-				m_icmpHeader->Checksum = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_icmpHeader->Checksum = ByteSwap(value);
 			}
 		}
 
@@ -115,7 +117,7 @@ namespace Divert
 		{
 			if (m_icmpHeader != nullptr)
 			{
-				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_icmpHeader->Body)));				
+				return ByteSwap(m_icmpHeader->Body);				
 			}
 
 			return 0;
@@ -125,7 +127,7 @@ namespace Divert
 		{
 			if (m_icmpHeader != nullptr)
 			{
-				m_icmpHeader->Body = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
+				m_icmpHeader->Body = ByteSwap(value);
 			}
 		}
 

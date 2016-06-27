@@ -24,6 +24,8 @@
 
 #include "DivertIPHeader.hpp"
 
+#include "Util.hpp"
+
 namespace Divert
 {
 	namespace Net
@@ -117,7 +119,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_ipHeader->Length));				
+				return ByteSwap(m_ipHeader->Length);				
 			}
 
 			return 0;
@@ -127,7 +129,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				m_ipHeader->Length = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_ipHeader->Length = ByteSwap(value);
 			}
 		}
 
@@ -135,7 +137,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_ipHeader->Id));				
+				return ByteSwap(m_ipHeader->Id);				
 			}
 
 			return 0;
@@ -145,7 +147,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				m_ipHeader->Id = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				m_ipHeader->Id = ByteSwap(value);
 			}
 		}
 
@@ -153,8 +155,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto value = WINDIVERT_IPHDR_GET_FRAGOFF(m_ipHeader);
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));
+				uint16_t value = WINDIVERT_IPHDR_GET_FRAGOFF(m_ipHeader);
+				return ByteSwap(value);
 			}
 
 			return 0;
@@ -164,7 +166,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				uint16_t modifiedValue = ByteSwap(value);
 				WINDIVERT_IPHDR_SET_FRAGOFF(m_ipHeader, modifiedValue);
 			}
 		}
@@ -173,8 +175,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto value = WINDIVERT_IPHDR_GET_MF(m_ipHeader);
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));
+				uint16_t value = WINDIVERT_IPHDR_GET_MF(m_ipHeader);
+				return ByteSwap(value);
 			}
 
 			return 0;
@@ -184,7 +186,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				auto modifiedValue = ByteSwap(value);
 				WINDIVERT_IPHDR_SET_MF(m_ipHeader, modifiedValue);
 			}
 		}
@@ -193,8 +195,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto value = WINDIVERT_IPHDR_GET_DF(m_ipHeader);
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));				
+				uint16_t value = WINDIVERT_IPHDR_GET_DF(m_ipHeader);
+				return ByteSwap(value);				
 			}
 
 			return 0;
@@ -204,7 +206,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				uint16_t modifiedValue = ByteSwap(value);
 				WINDIVERT_IPHDR_SET_DF(m_ipHeader, modifiedValue);
 			}
 		}
@@ -213,8 +215,8 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto value = WINDIVERT_IPHDR_GET_RESERVED(m_ipHeader);
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));				
+				uint16_t value = WINDIVERT_IPHDR_GET_RESERVED(m_ipHeader);
+				return ByteSwap(value);				
 			}
 
 			return 0;
@@ -224,7 +226,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				auto modifiedValue = static_cast<uint16_t>(System::Net::IPAddress::HostToNetworkOrder(value));
+				uint16_t modifiedValue = ByteSwap(value);
 				WINDIVERT_IPHDR_SET_RESERVED(m_ipHeader, modifiedValue);
 			}
 		}
@@ -269,7 +271,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				return static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(m_ipHeader->Checksum));				
+				return ByteSwap(m_ipHeader->Checksum);				
 			}
 
 			return 0;
@@ -279,7 +281,7 @@ namespace Divert
 		{
 			if (m_ipHeader != nullptr)
 			{
-				m_ipHeader->Checksum = static_cast<uint16_t>(System::Net::IPAddress::NetworkToHostOrder(value));
+				m_ipHeader->Checksum = ByteSwap(value);
 			}
 		}
 

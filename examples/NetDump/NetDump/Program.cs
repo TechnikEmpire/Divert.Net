@@ -106,6 +106,8 @@ namespace NetDump
                         ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString(),
                         address.Direction == DivertDirection.Inbound ? string.Format("to process {0}", processName) : string.Format("from process {0}", processName)
                         );
+
+                    Console.WriteLine(string.Format("ack: {0}, syn: {1}, len: {2}, seq: {3}", tcpHeader.Ack, tcpHeader.Syn, ipHeader.Length, tcpHeader.SequenceNumber));
                 }
                 else if(ipHeader.Valid && udpHeader.Valid)
                 {
@@ -139,7 +141,9 @@ namespace NetDump
                         ipHeader.DestinationAddress.ToString(), tcpHeader.DestinationPort.ToString(),
                         ipHeader.SourceAddress.ToString(), tcpHeader.SourcePort.ToString(),
                         address.Direction == DivertDirection.Inbound ? string.Format("to process {0}", processName) : string.Format("from process {0}", processName)
-                        );                    
+                        );
+
+                    Console.WriteLine(string.Format("ack: {0}, syn: {1}, len: {2}, seq: {3}", tcpHeader.Ack, tcpHeader.Syn, ipv6Header.Length, tcpHeader.SequenceNumber));
                 }
                 else if (ipv6Header.Valid && udpHeader.Valid)
                 {

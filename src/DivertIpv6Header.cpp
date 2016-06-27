@@ -24,6 +24,8 @@
 
 #include "DivertIPv6Header.hpp"
 
+#include "Util.hpp"
+
 namespace Divert
 {
 	namespace Net
@@ -68,21 +70,40 @@ namespace Divert
 			m_ipv6Header = ipv6Header;
 		}
 
-		uint32_t IPv6Header::Version::get()
+		uint16_t IPv6Header::Length::get()
 		{
 			if (m_ipv6Header != nullptr)
-			{
-				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(m_ipv6Header->Version)));
+			{	
+				return ByteSwap(m_ipv6Header->Length);
 			}
 
 			return 0;
 		}
 
-		void IPv6Header::Version::set(uint32_t value)
+		void IPv6Header::Length::set(uint16_t value)
 		{
 			if (m_ipv6Header != nullptr)
 			{
-				m_ipv6Header->Version = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
+				m_ipv6Header->Length = ByteSwap(value);
+			}
+		}
+
+		System::Byte IPv6Header::Version::get()
+		{
+			if (m_ipv6Header != nullptr)
+			{	
+				
+				return m_ipv6Header->Version;
+			}
+
+			return 0;
+		}
+
+		void IPv6Header::Version::set(System::Byte value)
+		{
+			if (m_ipv6Header != nullptr)
+			{
+				m_ipv6Header->Version = value;
 			}
 		}
 
@@ -90,8 +111,8 @@ namespace Divert
 		{
 			if (m_ipv6Header != nullptr)
 			{
-				auto value = WINDIVERT_IPV6HDR_GET_TRAFFICCLASS(m_ipv6Header);
-				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(value)));
+				uint32_t value = WINDIVERT_IPV6HDR_GET_TRAFFICCLASS(m_ipv6Header);
+				return ByteSwap(value);
 			}
 
 			return 0;
@@ -101,7 +122,7 @@ namespace Divert
 		{
 			if (m_ipv6Header != nullptr)
 			{
-				auto modifiedValue = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
+				uint32_t modifiedValue = ByteSwap(value);
 				WINDIVERT_IPV6HDR_SET_TRAFFICCLASS(m_ipv6Header, modifiedValue);
 			}
 		}
@@ -110,8 +131,8 @@ namespace Divert
 		{
 			if (m_ipv6Header != nullptr)
 			{
-				auto value = WINDIVERT_IPV6HDR_GET_FLOWLABEL(m_ipv6Header);
-				return static_cast<uint32_t>(System::Net::IPAddress::NetworkToHostOrder(static_cast<long long>(value)));
+				uint32_t value = WINDIVERT_IPV6HDR_GET_FLOWLABEL(m_ipv6Header);
+				return ByteSwap(value);
 			}
 
 			return 0;
@@ -121,7 +142,7 @@ namespace Divert
 		{
 			if (m_ipv6Header != nullptr)
 			{
-				auto modifiedValue = static_cast<uint32_t>(System::Net::IPAddress::HostToNetworkOrder(static_cast<long long>(value)));
+				uint32_t modifiedValue = ByteSwap(value);
 				WINDIVERT_IPV6HDR_SET_FLOWLABEL(m_ipv6Header, modifiedValue);
 			}
 		}
