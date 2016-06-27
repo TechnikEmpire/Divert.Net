@@ -41,7 +41,7 @@ inline uint16_t ByteSwapUInt16(uint16_t val)
 
 
 template<typename T>
-static T ByteSwap(T val)
+inline T ByteSwap(T val)
 {
 	// Ensure supported types at compile time.
 	static_assert((std::is_same<T, uint32_t>::value || std::is_same<T, uint16_t>::value), "Unsupported type!");
