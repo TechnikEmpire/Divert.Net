@@ -1,3 +1,6 @@
+## Notice  
+You may be interested in my other project, which is a simple PInvoke class for WinDivert. It does require unsafe code, but it's much less hassle than using this library. You can find it [here on github](https://github.com/TechnikEmpire/DivertPInvoke).
+
 # Divert.Net
 
 .NET Wrapper for [WinDivert](https://github.com/basil00/Divert), available under the very permissive MIT License. It should be noted that the library that this project wraps, WinDivert, is [licensed differently](https://github.com/basil00/Divert/blob/master/LICENSE). Don't forget to respect the license of WinDivert.
