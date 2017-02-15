@@ -60,14 +60,22 @@ namespace Divert
 		{
 			if (Valid)
 			{
+				BOOL result = false;
 				if (m_fromWinDivert)
 				{
-					return WinDivertClose(m_handle) == 1;
+					result = WinDivertClose(m_handle) == 1;					
 				}
 				else
 				{
-					return CloseHandle(m_handle) != 0;
-				}				
+					result = CloseHandle(m_handle) != 0;					
+				}
+
+				if (result)
+				{
+					m_handle = INVALID_HANDLE_VALUE;
+				}
+
+				return result;
 			}
 			else
 			{
