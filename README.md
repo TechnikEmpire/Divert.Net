@@ -5,7 +5,7 @@ You may be interested in my other project, which is a simple PInvoke class for W
 
 .NET Wrapper for [WinDivert](https://github.com/basil00/Divert), available under the very permissive MIT License. It should be noted that the library that this project wraps, WinDivert, is [licensed differently](https://github.com/basil00/Divert/blob/master/LICENSE). Don't forget to respect the license of WinDivert.
 
-##Goals
+## Goals
 
  - Wrap WinDivert in a managed, easy to use CLR library.
  - Provide helpful extensions for commonly desired tasks, such as the ability to identify the process behind a packet flow.
