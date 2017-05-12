@@ -246,11 +246,14 @@ namespace Divert
 			// If we made it here, the table is valid and populated.
 			for (size_t i = 0; i < tcpHeader->UnmanagedTcpV4Table->dwNumEntries; ++i)
 			{
+				// Note here that we mask dwLocalPort. Upper bits can be filled with garbage
+				// accord to Microsoft: https://msdn.microsoft.com/en-us/library/windows/desktop/aa366909(v=vs.85).aspx
+
 				switch (matchSrcPort)
 				{
 					case true:
 					{
-						if (static_cast<u_short>(tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->SrcPort)
+						if (static_cast<u_short>((tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort & 0xFFFF)) == tcpHeader->UnmanagedHeader->SrcPort)
 						{
 							if (tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalAddr == ipv4Header->UnmanagedHeader->SrcAddr)
 							{
@@ -262,7 +265,7 @@ namespace Divert
 					break;
 					case false:
 					{
-						if (static_cast<u_short>(tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->DstPort)
+						if (static_cast<u_short>((tcpHeader->UnmanagedTcpV4Table->table[i].dwLocalPort & 0xFFFF)) == tcpHeader->UnmanagedHeader->DstPort)
 						{
 							if (tcpHeader->UnmanagedTcpV4Table->table[i].dwRemoteAddr == ipv4Header->UnmanagedHeader->DstAddr)
 							{
@@ -364,7 +367,10 @@ namespace Divert
 				{
 					case true:
 					{	
-						if (static_cast<u_short>(tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort) == tcpHeader->UnmanagedHeader->SrcPort)
+						// Note here that we mask dwLocalPort. Upper bits can be filled with garbage
+						// accord to Microsoft: https://msdn.microsoft.com/en-us/library/windows/desktop/aa366909(v=vs.85).aspx
+
+						if (static_cast<u_short>((tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort & 0xFFFF)) == tcpHeader->UnmanagedHeader->SrcPort)
 						{
 							pp1 = (
 								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[0]) << 48) |
@@ -495,26 +501,29 @@ namespace Divert
 			// If we made it here, the table is valid and populated.
 			for (size_t i = 0; i < udpHeader->UnmanagedUdpV4Table->dwNumEntries; ++i)
 			{
+				// Note here that we mask dwLocalPort. Upper bits can be filled with garbage
+				// accord to Microsoft: https://msdn.microsoft.com/en-us/library/windows/desktop/aa366909(v=vs.85).aspx
+
 				switch (matchSrcPort)
 				{
-				case true:
-				{
-					if (static_cast<u_short>(udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->SrcPort)
+					case true:
 					{
-						processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
-						break;
+						if (static_cast<u_short>((udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort & 0xFFFF)) == udpHeader->UnmanagedHeader->SrcPort)
+						{
+							processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
+							break;
+						}
 					}
-				}
-				break;
-				case false:
-				{
-					if (static_cast<u_short>(udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->DstPort)
+					break;
+					case false:
 					{
-						processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
-						break;
+						if (static_cast<u_short>((udpHeader->UnmanagedUdpV4Table->table[i].dwLocalPort & 0xFFFF)) == udpHeader->UnmanagedHeader->DstPort)
+						{
+							processId = udpHeader->UnmanagedUdpV4Table->table[i].dwOwningPid;
+							break;
+						}
 					}
-				}
-				break;
+					break;
 				}
 			}
 
@@ -596,26 +605,30 @@ namespace Divert
 			// If we made it here, the table is valid and populated.
 			for (size_t i = 0; i < udpHeader->UnmanagedUdpV6Table->dwNumEntries; ++i)
 			{
+				// Note here that we mask dwLocalPort. Upper bits can be filled with garbage
+				// accord to Microsoft: https://msdn.microsoft.com/en-us/library/windows/desktop/aa366909(v=vs.85).aspx
+
 				switch (matchSrcPort)
 				{
-				case true:
-				{
-					if (static_cast<u_short>(udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->SrcPort)
+					case true:
 					{
-						processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
-						break;
+
+						if (static_cast<u_short>((udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort & 0xFFFF)) == udpHeader->UnmanagedHeader->SrcPort)
+						{
+							processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
+							break;
+						}
 					}
-				}
-				break;
-				case false:
-				{
-					if (static_cast<u_short>(udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort) == udpHeader->UnmanagedHeader->DstPort)
+					break;
+					case false:
 					{
-						processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
-						break;
+						if (static_cast<u_short>((udpHeader->UnmanagedUdpV6Table->table[i].dwLocalPort & 0xFFFF)) == udpHeader->UnmanagedHeader->DstPort)
+						{
+							processId = udpHeader->UnmanagedUdpV6Table->table[i].dwOwningPid;
+							break;
+						}
 					}
-				}
-				break;
+					break;
 				}
 			}
 
