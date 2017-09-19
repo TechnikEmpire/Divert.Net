@@ -352,14 +352,6 @@ namespace Divert
 			// we want to match the local port.
 			bool matchSrcPort = address->Direction == DivertDirection::Outbound;
 
-			uint64_t localAddP1 = ((static_cast<uint64_t>(ipv6Header->UnmanagedHeader->SrcAddr[0]) << 32) | (static_cast<uint64_t>(ipv6Header->UnmanagedHeader->SrcAddr[1])));
-			uint64_t localAddP2 = ((static_cast<uint64_t>(ipv6Header->UnmanagedHeader->SrcAddr[2]) << 32) | (static_cast<uint64_t>(ipv6Header->UnmanagedHeader->SrcAddr[3])));
-
-			uint64_t remoteAddP1 = ((static_cast<uint64_t>(ipv6Header->UnmanagedHeader->DstAddr[0]) << 32) | (static_cast<uint64_t>(ipv6Header->UnmanagedHeader->DstAddr[1])));
-			uint64_t remoteAddP2 = ((static_cast<uint64_t>(ipv6Header->UnmanagedHeader->DstAddr[2]) << 32) | (static_cast<uint64_t>(ipv6Header->UnmanagedHeader->DstAddr[3])));
-
-			uint64_t pp1, pp2;
-
 			// If we made it here, the table is valid and populated.
 			for (size_t i = 0; i < tcpHeader->UnmanagedTcpV6Table->dwNumEntries; ++i)
 			{
@@ -372,21 +364,9 @@ namespace Divert
 
 						if (static_cast<u_short>((tcpHeader->UnmanagedTcpV6Table->table[i].dwLocalPort & 0xFFFF)) == tcpHeader->UnmanagedHeader->SrcPort)
 						{
-							pp1 = (
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[0]) << 48) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[1]) << 32) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[2]) << 16) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[3]))
-								);
+							auto oPtr = (uint32_t*)(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Byte);
 
-							pp2 = (
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[4]) << 48) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[5]) << 32) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[6]) << 16) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].LocalAddr.u.Word[7]))
-								);
-
-							if (pp1 == localAddP1 && pp2 == localAddP2)
+							if (std::memcmp(ipv6Header->UnmanagedHeader->SrcAddr, oPtr, 4) == 0)
 							{
 								processId = tcpHeader->UnmanagedTcpV6Table->table[i].dwOwningPid;
 								break;
@@ -399,21 +379,9 @@ namespace Divert
 					{
 						if (static_cast<u_short>(tcpHeader->UnmanagedTcpV6Table->table[i].dwRemotePort) == tcpHeader->UnmanagedHeader->DstPort)
 						{
-							pp1 = (
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[0]) << 48) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[1]) << 32) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[2]) << 16) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[3]))
-								);
+							auto oPtr = (uint32_t*)(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Byte);
 
-							pp2 = (
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[4]) << 48) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[5]) << 32) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[6]) << 16) |
-								(static_cast<uint64_t>(tcpHeader->UnmanagedTcpV6Table->table[i].RemoteAddr.u.Word[7]))
-								);
-
-							if (pp1 == remoteAddP1 && pp2 == remoteAddP2)
+							if (std::memcmp(ipv6Header->UnmanagedHeader->DstAddr, oPtr, 4) == 0)							
 							{
 								processId = tcpHeader->UnmanagedTcpV6Table->table[i].dwOwningPid;
 								break;
